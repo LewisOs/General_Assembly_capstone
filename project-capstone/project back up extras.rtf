@@ -1,0 +1,49 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww20060\viewh14320\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 # Importing libraries\
+import numpy as np\
+import pandas as pd\
+import matplotlib.pyplot as plt\
+\
+import requests\
+import bs4\
+from bs4 import BeautifulSoup\
+from selenium import webdriver\
+\
+import re\
+import time\
+\
+path = '/Users/lewis/Desktop/GA/DSI25-lessons/projects/project-capstone/individual_listing_example_(dog).rtf'\
+\
+with open(path) as f:\
+    html = f.read()\
+\
+soup = BeautifulSoup(html, 'html.parser')\
+\
+details = soup.find_all(class_ = 'zo')\
+\
+detail_dict = \{\}\
+\
+for detail in details:\
+    key = detail.find(class_ = 'wn').text\
+    value = detail.find(class_ = 'zn').text\
+    detail_dict[key] = value\
+\
+print(detail_dict)\
+\
+df = pd.read_csv('/Users/lewis/Desktop/GA/DSI25-lessons/projects/project-capstone/dogs_html_strs_(first_4368)_11-01-23')\
+ \
+html = df['URLs'].iloc[0]\
+\
+soup = BeautifulSoup(html, 'html.parser')\
+\
+details = soup.find_all(class_ = 'zo')\
+\
+listing_details = soup.find(attrs=\{"data-testid": 'listing-details'\})\
+listing_params = listing_details.find_all(attrs=\{"data-testid": 'details-parameter'\})\
+}
