@@ -33,36 +33,36 @@ Stage one involved making a series of searches which would return all listings f
 
 The second stage of the scrape involved going to each of the URLs and extracting the relevant information about the listing. As before, I did this with a combination of Selenium and Beautiful Soup. However, I soon encountered a problem. I had written functions using Beautiful Soup to extract information about each pet listing from it’s HTML, using HTML class names to find where that information was represented. This seemed to work well at first, but then my scraper stopped returning any information. Unable to find any obvious errors in my code, I doubled checked Pets4Home’s live HTML and discovered that the class names had changed. In fact, it appear that they were dynamically updating them multiple times a day. This had not become apparent during the first stage of my scrape, as it was relatively quick. By comparison, the second stage involved around 20x more web pages and was done in stages.
 
-As I was working to a tight deadline and was initially unable to figure out a way to extract the information I needed without referencing the class names, I had to modify my plans. Rather than nativgating to each URL and extracting only the information I needed, I simply downloaded the full HTML for every page. My reasoning was that if I was unable to extract the information with the class names changing, then at least I could create a static copy of the HTML to work on. This would allow me to rerun my original function over the downloaded HTML and, each time it began failing to extract information from a page, manually check what the class names had updated to so I could update the function to search for those. However, given that the class names were updating multiple times a day and that it took several days to scrape every listing, I was very keen to avoid this. 
+As I was working to a tight deadline and was initially unable to figure out a way to extract the information I needed without referencing the class names, I had to modify my plans. Rather than nativgating to each URL and extracting only the information I needed, I simply downloaded the full HTML for every page. My reasoning was that if I was unable to extract the information with the class names changing, then at least I could create a static copy of the HTML to work on. This would allow me to rerun my original function over the downloaded HTML and, each time it began failing to extract information from a page, manually check what the class names had updated to so I could update the function to search for those. However, given that the class names were updated multiple times a day and that it took several days to scrape every listing, I was very keen to avoid this. 
 
-Fortunately, I was able to find a solution to this problem. Rather than using Beautiful Soup to search for class names in the HTML, I used it to search for the unchanging attributes related to each class. For this to work, it was necessary to find attributes which were unique to each class. In some cases this was simple. For instance, in the head of the HTML, only the class corresponding to the webpage’s title had a text attribute containing the word ‘title’. Other classes required a more circuitous approach. For instance, sellers on Pets4Homes can be verified by one of four methods (phone, email, Google and Facebook). I was able to determine which methods a particular seller was verified by checking the hex colour codes of the icons corresponding to each method (with green indicating verification and grey indicating the opposite). Using these techniques, I was able to rewrite my original function to extract almost all of the information I needed. The exceptions to this were two classes with no unique attributes which indicated the number of times a listing had been viewed and the number of times it had been liked by viewers. 
+Fortunately, I was able to find a solution to this problem. Rather than using Beautiful Soup to search for class names in the HTML, I used it to search for the unchanging attributes related to each class. For this to work, it was necessary to find attributes which were unique to each class. In some cases this was simple. For instance, in the head of the HTML, only the class corresponding to the web page’s title had a text attribute containing the word ‘title’. Other classes required a more circuitous approach. For instance, sellers on Pets4Homes can be verified by one of four methods (phone, email, Google and Facebook). I was able to determine which methods a particular seller was verified by checking the hex colour codes of the icons corresponding to each method (with green indicating verification and grey indicating the opposite). Using these techniques, I was able to rewrite my original function to extract almost all of the information I needed. The exceptions to this were two classes with no unique attributes which indicated the number of times a listing had been viewed and the number of times it had been liked by viewers. 
 
 With this problem solved, I ran my 20,000+ pages of downloaded HTML through the updated extraction function and soon enough had a complete dataset 
 
 ## Data Cleaning
 
-The uncleaned dataset consisted of 20211 rows and 39 features. The features were:
+In this section, I will review the data cleaning steps that I took to prepare the data for EDA and predictive analysis. The uncleaned dataset consisted of 20211 rows and 39 features. The features were:
 
 Target variable:
 price - the price of 1 animal in the listing (some listings covered multiple animals, such as dog litters)
 Seller/advert variables:
 title - the title of the advert  
 url - the advert URL, included for reference
-seller_type - a categorical variable indicating whether the seller was a person or an organsiation
+seller_type - a categorical variable indicating whether the seller was a person or an organisation
 seller_name - the seller’s name
 phone_verified - a binary variable indicating whether the seller is verified by phone
 email_verified - a binary variable indicating whether the seller is verified by email
-facebook_verified - a binary variable indicating whether the seller is verified by facebook     
-google_verified - a binary variable indicating whether the seller is verified by google     
+facebook_verified - a binary variable indicating whether the seller is verified by Facebook     
+google_verified - a binary variable indicating whether the seller is verified by Google     
 n_images - a continuous variable indicating the number of images included in the advert           
 advert_id - the advert ID, included for reference       
 advert_location - the location of the seller (all sellers were UK based)
 advert_type - a categorical variable indicating the type of advert. Pets4Homes also allows sellers to list accessories and services for sale. As I was only looking at pets, this value was the same for all rows and the variable was dropped.
-advertiser_type - a categorical variable providing similar information to seller_type, but at a more granular level (e.g. it includes levels such as ‘liscenced breeder’ and ‘charity’)
-description - the seller supplied description of the listing (a text box from the webpage)
+advertiser_type - a categorical variable providing similar information to seller_type, but at a more granular level (e.g. it includes levels such as ‘licensed breeder’ and ‘charity’)
+description - the seller-supplied description of the listing (a text box from the webpage)
 pet_available        
 General pet variables:
-category - a categorical variable specifying how the animal is classed by Pets4Homes’ search function. This is effectively species (e.g. dogs, cats, horses), but also includes some more general bins (reptiles, birds, fish).     
+category - a categorical variable specifying how the animal is classed by Pets4Homes’ search function. This effectively corresponds to species (e.g. dogs, cats, horses), but also includes some more general bins (reptiles, birds, fish).     
 breed - a categorical variable specifying the breed of the particular pet (e.g. ‘English springer spaniel’).
 pet_age - the pet’s age formatted as variations on ‘n days, n months, n years’   
 pet_colour - the colour of the pet              
@@ -82,25 +82,77 @@ kc_registered - a binary variable indicating whether a dog is registered with th
 Viewable_with_mother - a binary variable indicating whether a puppy is viewable with it’s mother
 Horse specific variables     
 birth_year - a continuous variable indicating a horse’s year of birth     
-category_1 - a catergorical variable indicating what the horse’s primary use (e.g. dressage, show jumping, companionship etc.)
-category_2 - a catergorical variable indicating what the horse’s secondary use with identical levels to category_1
+category_1 - a categorical variable indicating the horse’s primary use (e.g. dressage, show jumping, companionship etc.)
+category_2 - a categorical variable indicating the horse’s secondary use with identical levels to category_1
 gender - a categorical variable indicating both the horse’s sex and whether it was neutered, with 3 levels (stallion, gelding, mare)
 Height - a continuous variable specifying the horse’s height, measured in hands                   
 Origin - a categorical variable indicating the horse’s country of origin
 level_jumping - a categorical variable indicating at what level the horse competed at show jumping
 level_dressage - a categorical variable indicating at what level the horse competed at dressage
 
+As you may be able to tell from the variables listed above, the initial dataset was quite messy and needed significant cleaning. Two of the most obvious problems were distinct columns representing similar information (e.g. the sex, neutered and gender columns, or the age and birth_year columns) and columns which only had values for certain animal types (e.g any of the dog, cat or horse specific columns) meaning the data set had a large number of NaNs. In addition to this, most columns contained information which was simply pulled straight from the raw HTML. As such, many columns contained unprocessed numerical information (e.g. ‘7 males / 5 females’) or contained correctly typed numerical information which was incorrectly typed as a string. There were a small number of exceptions where I had created numerical variables based on information in the HTML (e.g. the number of photos included in the advert). 
 
-As you may be able to tell from the variables listed above, the dataset was quite messy and needed significant cleaning. Two of the most initially obvious problems were distinct columns representing similar information (e.g. the sex, neutered and gender columns, or the age and birth_year columns) and columns which only had values for certain animal types (e.g any of the dog, cat or horse specific columns) meaning the data set had a large number of NaNs. In addition to this, most columns contained data which was simply pulled straight from the HTML. As such, most columns were incorrectly formatted as strings. There were a small number of exceptions where I had created numerical variables based on information in the HTML (e.g. the number of photos included in the advert). In this section, I will review the steps that I took to address these issues and to prepare the data for EDA and predictive analysis.
+I decided to begin with the low-hanging fruit. The first cleaning step I took was to check for any duplicate rows in the data, of which I found 718. These were all dropped. Next, I updated the types of any columns which had correctly formatted numerical information, which was wrongly typed (for instance, converting the price column from string type to float type). Finally, I dropped columns which I felt would not be useful. Specifically, these were advert_type (as all values were identical) and pet_available (as the column was about 50% NaNs, I wasn’t able to scrape an upload date to compare it to and, ultimately, I felt it wasn’t relevant to my original question).
 
-The first cleaning step I took was to check for any duplicate rows in the data, of which I found 718. 
+With the easy cleaning tasks complete, I started on the columns relating to the advert and/or seller. Slightly less than half of the seller names were unique. Of those which appeared more than once, about 2/3rds were individuals and the remaining 3rd were organisations. Whilst organisation’s names were given in full, names of individuals were formatted as their first name followed by their surname initial  (e.g. ‘John S.’). Due to this, it was unclear whether two listings by individuals with the same seller_name value were listings by the same seller or simply sellers with similar names. Given this, I decided I would drop the seller_name column and replace it with a column which would specify the number of listings associated with a seller, called seller_n_listings. Given that I could not be if any individual had more than one listing, I set the value of seller_n_listings to 1 for all sellers and for all organisations, used the number of times that they appeared in the seller_name column.
 
-Converted price to a float
-Dropped advert type
-Almost half the seller names were unique. ⅓ of those that appeared more than once were organisations. Dropped seller name and replaced it with seller_n_adverts.
-6653 unique locations, down to town level. Stripped these back to the most general location (e.g. London, Birmingham etc.). Ended with 1168 locations.
-Seller_type and advertiser_type contained similar information, with the latter having more granular detail, but some NaNs. I used the former to fill the gaps in the latter and then dropped the former.
-9 
+The location column included 6653 unique values, which were not consistently formatted. Whilst some were quite specific, with multiple levels of address, others were as general as “London”. Whilst I had initially wanted to geocode the location values, this inconsistency meant that some the geocoding would be much more precise and accurate for some rows than for others. Given this, I instead decided to strip the locations down to the most general level specified (as every instance contained this level of information) and treat location as a categorical variable. After processing the location column contained 1168 unique locations.
+
+As mentioned above, the seller_type and advertiser_type columns contained very similar information. seller_type only had two levels, indicating whether the seller was an organisation or an individual. advertiser_type had more granular detail, for instance, distinguishing between charities and for-profit organisations. Whereas seller_type had no missing information, advertiser_type had some NaNs. As such, I used the former to fill the gaps in the latter and then dropped the former. This completed the cleaning related to the sellers and adverts. Next was the cleaning relating to the pets being sold.
+
+92 rows had NaNs for the breed column. On closer inspection, I discovered that all of these rows has completely unverifited sellers and that the advert titles were extremely generic and many of them were duplicated (e.g. ‘Goldfish for sale’). I opened some of these adverts in my browser and found that for many of them the animals in the photos were not even the same as the listed category. Given this, I assumed that these adverts were either erroneously generated, or possibly fishing scams. As such, I dropped these rows.
+
+The next step was to clean and combine the pet_age and birth_year columns. For pet_age, I needed to extract numeric information from text which was formatted in variations on ‘x years, x months, x, weeks, x days’, where each entry may have included some, but not all of the levels. Because the stings were incosistenly formatted, simply converting them using Python‘s datetime module was not an option. Instead, I split each string into a list of strings, anywhere a comma occurred. Next, I looped over this list and, for each element, checked the value of the numerical element that it contained and the amount of time it referred to (e.g. by checking if it contained the word ‘year’). With this information, I was able to determine the amount of time each list element corresponded to in days, and sum these values to get the pet’s age in days. Any rows from the horses category did not have a value for pet_age, but had one for birth_year instead. For these, I calculated the horse’s age in days (rounded to the year) by subtracting their birth year from 2023 and multiplying this value by 365. With these new values calculated, I added them to a new pets_age_in_days column and dropped pet_age and birth_year.
+
+The pets_in_litter column contained variations on the text ‘x males / x females’. As such, I wanted to split this into two continuously valued column, males_in_litter and females_in_litter. 
+
+The columns 'pet_sex', 'gender' and 'neutered' had some semtnatic overlap which needed to be disentagled. 'pet_sex' had three levels (male, female and mixed). 'gender' was specific to horse listings and also has three levels (mare, gelding and stallion). 'neutered' only has two levels (yes, no) However, a gelding is a neutered male horse and all the horse rows all had NaNs for the 'neutered' column. I needed to sort these columns so that the information stored in the horse-specific 'gender' column could be moved to the general 'pet_sex' and 'neutered' columns. To do this, I updated all geldings to pet_sex = male, neutered = yes, stallions to pet_sex = male, neutered = no and mares to pet_sex = female and neutered = no. After this, I dropped the ‘gender’ column. Although I cannot be certain that all mares in the dataset were not neutered, I felt comfortable assuming this based on my background research. In the UK, neutering a mare is very rarely done. This is because it is an extremely risky operation and typically only ever done as a lifesaving procedure.
+
+Having disentangled gender and pet_sex, there is still some semantic overlap between the pet_sex and fe/males_in_litter. Specifically, columns with non-NaN values for pet_sex all have NaNs for fe/males_in_litter. Where the litter is all male or all female, pet_sex can be updated to match that. Where there are both, pet_sex can be updated to mixed. I still want to keep both columns as fe/males_in_litter indicates a) that the pets are infants and b) the number of either gender, which is absent from pet_sex. However, I cant just drop pet_sex, as some of the pets are adult animals and so would have a fe/males_in_litter value of 0. Fish are unsexed on Pets4Homes, so added ‘Not applicable’.
+
+Both the cats and dogs categories had information relating to whether the pet was registered with owners club/association. For dogs, this was the binary column ‘kc_registered’ (i.e. The Kennel Club). For cats, this was the categorical column ‘registered’, which could indicate that the cat was registered with any, some or all of 3 cat fancy associations, formatted as a sting listing association names. I decided to flatten these two columns into a single column which indicated whether a cat or dog was registered with an owners club or association. 
+
+Cats and Dogs stuff
+Horse stuff.
+
+ The cleaned data set was 19,271 rows and 35 columns, containing the following information:
+
+'title' : 'The title of the listing',
+'price' : 'The price of the listed pet',
+'url' : 'The URL of the listing',
+'phone_verified' : "Whether the seller's profile has been verified by phone",
+'email_verified' : "Whether the seller's profile has been verified by email",
+'facebook_verified' : "Whether the seller's profile has been verified by Facebook",
+'google_verified' : "Whether the seller's profile has been verified by Google",
+'n_images' : 'The number of images included in the listing',
+'category' : 'The type of animal',
+'advert_id' : "The listing's unique ID",
+'advert_location' : "The location of the seller",
+'advertiser_type' : 'The type of seller',
+'breed' : 'The breed of the pet(s) being sold',
+'pet_age' : 'The age of the pet(s) being sold',
+'pet_colour' : 'The colour of the pet(s) being sold',
+'pet_sex' : 'The sex of the pet(s) being sold',
+'description' : 'The listing description provided by the seller',
+'health_checked' : 'Whether the pets(s) have been health checked',
+'microchipped' : 'Whether the pets(s) have been microchipped',
+'neutered' : "Whether the pet(s) have been neutered",
+'vaccinated' : "Whether the pet(s) have been vaccinated",
+'worm_treated' : "Whether the pet(s) have been worm treated",
+'registered' : "Whether the pet(s) are registered with a breeders or owners club/society",
+'original_breeder' : 'Whether the seller is the original breeder of the pet',
+'viewable_with_mother' : "Whether the pet is viewable with it's mother",
+'category_1' : 'The primary category of a horse', 
+'category_2' : 'The secondary category of a horse',
+'height' : 'The height of a horse (measured in hands)',
+'origin' : 'The origin of a horse',
+'jumping_horse' : 'Whether a horse does show jumping',
+‘dressage_horse' : 'Wether a horse does dressage',
+'seller_n_adverts' : 'The number of adverts that seller had at the time of data collection',
+'pets_age_in_days' : "The age of the pet(s), measured in days",
+'males_in_litter' : "The number of male pets in the litter",
+'females_in_litter' : "The number of female pets in the litter"
+
 
 ## EDA
 
