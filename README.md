@@ -2,7 +2,15 @@
 
 ## TL;DR
 
-8-10 bullet points summarising the project.
+* This is my capstone project for General Assembly's 2022/23 Data Science Intensive Course. It is an end-to-end solo machine-learning project which I completed over a period of 5 weeks.
+* Following the pandemic and UK's cost of living crisis, prices in the UK's pet sales market have been extremely turbulent. This project aims to use information from online pet sales listings to model and predict the prices of pets.
+* My specific goal for the project was to build a regression model which could predict prices with a high degree of accuracy (defined as an R2 score of 0.80), which could be used by buyers and sellers to understand the current market rate for a wide variety of pet types.
+* To collect the data, I scraped over 20,000 user-generated listings from the online pet sales platform Pets4Homes.co.uk using Selenium. I did this in two stages; 1) an inital scrape of the site's search pages to extract the individual listings' URLs and 2) a second round scraping each URL to collect information about each listing, seller and pet.
+* A data wrangling challenge arose when I discovered that the Pets4Homes website automatically changes it's HTML class names at regular intervals.   I overcame this by using BeautifulSoup to extract information from the HTML based on the classes' unchanging attributes (e.g. the colour hex codes of buttons).
+* The uncleaned dataset consisted of 20211 rows and 39 features. Cleaning the dataset was a combination of some commonplace jobs (e.g. updating data types, handling NaNs, dropping irrelevant or useless columns) and some more nuanced tasks (e.g. combining or separating columns with overlapping semantics, or handling columns which only applied to particular animal types). After cleaning, the data set conisited of 19,271 rows and 35 columns.
+* I carried out the EDA by splitting the variables into their statistical datatypes. After I removing outliers from the continuous variables, I was able to discover that most had very diffrent ranges depending on the animal type and also had non-linear relationships with the target variable. I also found promising correaltions between the target and the binary and categorical variables. I also analyzed the text variables using tf-idf, but I came to the conclusion that they didn't add much information which was not already captured by the other variables.
+* I modelled the data using SciKit Learn. I began comparing the performance 9 regession algorithms using standard parameters and chose the 4 best for parameter tuning. These were ridge regression, LASSO regression, random forest regression and gradient-boosting regression. After tuning, the gradient-boosting regressor had the best performance, attaining a test set R2 of 0.65. All of the tuned models tended to underestimate the target.
+* I was unable to build a model which could meet my original R2 target of 0.80+. As such, further improvements are needed before these models could be deployed for use by pet sellers and buyers. As next steps, I would like to experiment with collecting a larger dataset over a longer timespan, building individual models for each animal type and using other NLP tools to extract more useful information from the text variables.
 
 ## Introduction
 #### Background
