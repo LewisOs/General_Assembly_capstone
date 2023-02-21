@@ -2,7 +2,7 @@
 
 ## Table of contents
 * [TL;DR](#TL;DR)
-* [Introduction](#Introduction)
+* [Introduction](#Introduction)..
  * [Background](#Background)
  * [Goals](#Goals)
 
