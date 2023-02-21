@@ -1,6 +1,9 @@
 # How much is that doggy in my (browser) window?
 
-## TL;DR
+## Table of contents
+* [TL;DR](#TL;DR)
+
+## TL;DR <a name="TL;DR"></a>
 
 * This is my capstone project for General Assembly's 2022/23 Data Science Intensive Course. It is an end-to-end solo machine-learning project which I completed over a period of 5 weeks.
 * Following the pandemic and UK's cost of living crisis, prices in the UK's pet sales market have been extremely turbulent. This project aims to use information from online pet sales listings to model and predict the prices of pets.
@@ -12,7 +15,7 @@
 * I modelled the data using SciKit Learn. I began comparing the performance 9 regession algorithms using standard parameters and chose the 4 best for parameter tuning. These were ridge regression, LASSO regression, random forest regression and gradient-boosting regression. After tuning, the gradient-boosting regressor had the best performance, attaining a test set R2 of 0.65. All of the tuned models tended to underestimate the target.
 * I was unable to build a model which could meet my original R2 target of 0.80+. As such, further improvements are needed before these models could be deployed for use by pet sellers and buyers. As next steps, I would like to experiment with collecting a larger dataset over a longer timespan, building individual models for each animal type and using other NLP tools to extract more useful information from the text variables.
 
-## Introduction
+## Introduction <a name="Introduction"></a>
 #### Background
 
 During the COVID-19 pandemic, British people sought cures for their lockdown blues in a variety of places. Some people found solace in the simple things, like tending their garden (in Animal Crossing), pretending to enjoy the interminably drawn-out process of making sourdough bread, or adhering to a strict regime of near-daily quizzes held over Zoom with friends and family (anyone fancy another round of Geoguessr?). Others took even more extreme measures, like changing out of their pyjamas or showering more than once a week. Whilst the jury is still out on the efficacy of these activities, there was one way to combat the doldrums that we could all agree just worked - spending time with our pets (and by ‘all’, I of course mean 87% of respondents to a cross-sectional online survey of UK residents over the age of 18 conducted by the University of York between April and June 2020). 
