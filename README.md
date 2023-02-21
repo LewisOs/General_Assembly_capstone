@@ -14,7 +14,15 @@
   * [Continuous variables](#Continuous variables)
   * [Binary variables](#Binary variables)
   * [Categorical variables](#Categorical variables)
-  
+  * [Text variables](#Text variables)
+* [Modelling](#Modelling)
+  * [Feature engineering](#Feature engineering)
+  * [Splitting and scaling the data](#Splitting and scaling the data)
+  * [Building models](#Building models)
+  * [Initial models](#Initial models)
+  * [Parameter tuning](#Parameter tuning)
+  * [Comparing models](#Comparing models)
+* [Conclusions and next steps](#Conclusions and next steps)
   
 
 ## TL;DR <a name="TL;DR"></a>
@@ -251,32 +259,29 @@ pet_colour - This variable needed some additional processing as some animals had
 category_1/category_2 These two variables only apply to horses and specify the primary and secondary categories to which the horse belongs. By far the most common category_1 value was allrounder. The most common category_2 value was other. Given this, and the fact that horses make up a very small percentage of the overall dataset, I did not expect these features to be particularly useful for predicting price.
 
 
-### Text variables
+### Text variables <a name="Text variables"></a>
 
 Both the title and description columns contained raw text. As such, it was necessary to do some further processing on these before they could be analysed. I vectorised both using a term-frequency inverse document-frequency (tf–idf) vectoriser, which reflects how important a word is for each entry in either column. Specifically, a word’s tf–idf value increases in proportion to the number of times that word appears in a specific title or description entry (i.e. the ‘document’) and is offset by the number of entries in the column (i.e. the ‘corpus’) that contain the word. Having calculated this for each column, I then found the correlation between each word appearing in a row and the target variable, price. I plotted these correlations on bar charts (see below). The correlations are somewhat unsurprising given what we have already learnt about the variables above. For instance, the term which most strongly correlates with the price is ‘kc’ (as in kennel club) for both the title and description columns. 
 
+## Modelling <a name="Modelling"></a>
 
- 
-
-
-## Modelling
 Finally, having completed the EDA, I began modelling the data. In this section, I will outline the small number of steps I took to prepare the data for modelling, the selection of models I tested, which performed best and the final results of the project.
 
-### Feature engineering
+### Feature engineering <a name="Feature engineering"></a>
 
 All features discussed in the EDA section were included in the modelling stage, except the advert_ID and url (as these are reference features only, not predictors) and the two text variables, title and description (or the vectorised versions of them). I chose not to include the text variables as the EDA suggested that they would not add any information not already captured by the other features. Additionally, it would not be possible to use all of the vectorised words, as this would have left me with more features than instances. As such, I would have needed to find some threshold by which to exclude some of these. I considered using the correlations discussed above for this but ultimately would have been choosing an arbitrary threshold. I plan to explore this further in future work.
 
 As discussed during the EDA, all of the continuous variables had non-linear relationships with the target variable. As such, I created polynomial features for these. I also dummified the categorical variables.
 
-### Splitting and scaling the data
+### Splitting and scaling the data <a name="Splitting and scaling the data"></a>
 
 I split the data set into the target (price) and a set of predictors and then further split these into a train and test set (with the test set consisting of 20% of the total instances). Because the target variable has a very strong right skew, I used stratification when splitting the data. This allowed me to ensure that the distribution of the target in the training and test sets was similar. This can be seen in the histograms below.  
 
-### Building models
+### Building models <a name="Building models"></a>
 
 I began by trying a large number of model types with some fairly standard values to see what kinds of baseline performance I could expect from each model type. After doing this, I selected the 4 most promising models to work on with parameter tuning. I then performed a deeper analysis of the best of the tuned models. Specifically, this involved looking at the coefficients/feature importances to determine which are most influential on the model's predictions and an analysis of the residuals. Finally, I built a stacking ensemble model from the best tuned models to see whether it could outperform the single best model.
 
-#### Initial models
+#### Initial models <a name="Initial models"></a>
 
 I fit 9 different model types on the data and returned their training and test set scores. With this information, we can get a general impression of the performance of each model and whether it is over or underfitting the data.
 I used 3 regularised linear regression models. These are; ridge, LASSO and elastic net regression.
@@ -292,7 +297,7 @@ The extra trees regressor was more similar to that of the ridge model (i.e. slig
 Finally, the gradient boosting regressor had the best test set performance of any of the models (R2: 0.65), but with a training set R2 of 0.92, it had massively overfit the data. As such, with some parameter tuning and regularisation, this could be a promising model.
 In sum, I selected four models to take into the parameter tuning stage. These are LASSO, elastic net, random forest and gradient-boosting regression.
 
-#### Parameter tuning
+#### Parameter tuning <a name="Parameter tuning"></a>
 
 This section summarises the parameter tuning steps taken for the four best models.
 
@@ -312,7 +317,8 @@ The best estimator found by the 1st round of parameter tuning reached a test set
 
 Gradient boosting
 Gradient boosting was the best of the initial models (with the highest test set R2), but also the most overfit model. Given this, I decided to try to test the effects of halving and doubling both of the parameters specified in the original model. I also added n_estimators to the grid search to counterbalance the effect of varying the learning rate. Unfortunately, I had to stop the parameter early as it was taking an extremely long time to run. I am planning to re-run it in future work. Instead, I attempted some manual parameter tuning. However, I was only able to attain a very small improvement in the model's test set R2 (~0.007). Whilst this is not much of an improvement, it does mean that gradient-boosted regression remains the strongest of the models.
-#### Comparing models
+
+#### Comparing models <a name="Comparing models"></a>
 
 For each of the tuned models, I have generated four plots. These are; a bar chart showing either the 20 largest (absolute valued) coefficients or 20 most important features, a scatter plot showing the model's predictions against the true values for the target, a histogram showing the distribution of the model's residuals and a Q-Q plot, also showing the distribution of the model's residuals.
 Between the four models, the scatterplots, histograms and Q-Q plots are highly similar. All four scatter plots indicate that the models have a slight tendency to underestimate the prices of the listings. Also, the models were unable to replicate sellers’ tendency to price their listings according to round numbers (e.g. £500, £1000 etc.).
@@ -325,7 +331,7 @@ Whilst these models could be used to predict the price of a pet listing with rea
 Stacking ensemble
 I also experimented with creating a stacking ensemble with the four best models as the base estimators and a gradient-boosting regressor as the meta-learner. The model had a worse test set R2 than the gradient boosting regressor. Further analysis of the distribution of errors between models may be able to explain why this is the case.
 
-## Conclusions and next steps
+## Conclusions and next steps <a name="Conclusions and next steps"></a>
 In this project, I set out to build a dataset representing the current state of the UK pet sales market. I did this by scraping user-generated listings from the popular pet sales platform, Pets4Homes. After cleaning the data, I had created a dataset with almost 20,000 instances and 35 features. Through EDA, I discovered that many of these features varied significantly between animal types. However, it did seem that many of these features could be decent predictors for pet prices. In the modelling stage, I experimented with several models and ultimately attained a peak test set R2 performance of 0.65 using a gradient-boosting regressor. All of the models tended to underestimate the target variable, which I suspect is due to its strong right skew. I was unable to build a model which could meet my original R2 target of 0.80+. As such, further improvements will need to be made before these models should be deployed for use by pet sellers and buyers. 
 
 Going forward, I will be working to improve this project with the goal of building a model which can attain my original target R2 (0.80+). Here are some of the steps that I plan to take:
