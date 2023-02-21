@@ -5,6 +5,8 @@
 * [Introduction](#Introduction)
   * [Background](#Background)
   * [Goals](#Goals)
+* [Data collection and wrangling](#Data collection and wrangling)
+* [Data Cleaning](#Data Cleaning)
 
 ## TL;DR <a name="TL;DR"></a>
 
@@ -36,7 +38,7 @@ Naturally, as demand rose and supply fell, there was only one possible outcome. 
 
 More recently, the UK’s ongoing cost of living crisis has made keeping or buying a pet financially prohibitive for many households. For instance, a 2021 survey by the Blue Cross and Edinburgh University found that 68% of respondents were concerned about the impact of the rising cost of living on their ability to care for their pets. This has sadly resulted in unprecedented numbers of people attempting to rehome their pets via animal shelters, or simply abandoning them outright. Between the 1st of January and the 31st of October, the Dogs Trust received 42,000 inquiries from dog owners about rehoming, 48% more than in the same period the year prior. Between January and July 2021, the RSPCA received 18,375  animal abandonment reports, for the same period in 2022 this figure had increased by ~25%, to 22,908 
 
-#### Goals <a name="Goals"></a>
+#### Goals <div id="Goals"></a>
 
 The extreme fluctuations seen in the UK’s demand for and supply of pets over the last few years have caused significant turbulence in pet prices. As such, it has become difficult for both sellers and buyers to know what is a fair price (or at least the market rate) for pets of different species, breeds, ages etc. Given this, I decided to model the current pet sales market. In particular, I wanted to see whether I would be able to build a model that could accurately predict the prices of individual pets based on their attributes. I decided to treat this as a regression problem (rather than binning pets in price bands to classify them) and to set a target of attaining an R2 of 0.80. Such a model would: 1) allow buyers to check whether an advert reflects current market prices, or older lockdown-inflated prices 2) allow buyers to determine which types of animals are within their budget, 3) allow sellers to figure out how best to competitively price their animals and 4) provide 3rd party platforms like Pets4Homes with a tool to inform their users about how listed prices compare to market rates (e.g. see Autotrader’s used car search as an example of this).
 
