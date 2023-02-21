@@ -2,9 +2,9 @@
 
 ## Table of contents
 * [TL;DR](#TL;DR)
-* [Introduction](#Introduction)..
- * [Background](#Background)
- * [Goals](#Goals)
+* [Introduction](#Introduction)\
+* [Background](#Background)
+* [Goals](#Goals)
 
 ## TL;DR <a name="TL;DR"></a>
 
