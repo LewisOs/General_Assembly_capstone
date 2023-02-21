@@ -5,24 +5,24 @@
 * [Introduction](#Introduction)
   * [Background](#Background)
   * [Goals](#Goals)
-* [Data collection and wrangling](#Data collection and wrangling)
-* [Data cleaning](#Data cleaning)
-  * [Seller & listing features](#Seller & listing features)
-  * [Pet features](#Pet features)
-  * [Cleaned data dictionary](#Cleaned data dictionary)
+* [Data collection and wrangling](#Data-collection-and-wrangling)
+* [Data cleaning](#Data-cleaning)
+  * [Seller & listing features](#Seller-&-listing-features)
+  * [Pet features](#Pet-features)
+  * [Cleaned data dictionary](#Cleaned-data-dictionary)
 * [EDA](#EDA)
-  * [Continuous variables](#Continuous variables)
-  * [Binary variables](#Binary variables)
-  * [Categorical variables](#Categorical variables)
-  * [Text variables](#Text variables)
+  * [Continuous variables](#Continuous-variables)
+  * [Binary variables](#Binary-variables)
+  * [Categorical variables](#Categorical-variables)
+  * [Text variables](#Text-variables)
 * [Modelling](#Modelling)
-  * [Feature engineering](#Feature engineering)
-  * [Splitting and scaling the data](#Splitting and scaling the data)
-  * [Building models](#Building models)
-  * [Initial models](#Initial models)
-  * [Parameter tuning](#Parameter tuning)
-  * [Comparing models](#Comparing models)
-* [Conclusions and next steps](#Conclusions and next steps)
+  * [Feature engineering](#Feature-engineering)
+  * [Splitting and scaling the data](#Splitting-and-scaling-the-data)
+  * [Building models](#Building-models)
+  * [Initial models](#Initial-models)
+  * [Parameter tuning](#Parameter-tuning)
+  * [Comparing models](#Comparing-models)
+* [Conclusions and next steps](#Conclusions-and-next-steps)
   
 
 ## TL;DR <a name="TL;DR"></a>
@@ -59,7 +59,7 @@ More recently, the UK’s ongoing cost of living crisis has made keeping or buyi
 
 The extreme fluctuations seen in the UK’s demand for and supply of pets over the last few years have caused significant turbulence in pet prices. As such, it has become difficult for both sellers and buyers to know what is a fair price (or at least the market rate) for pets of different species, breeds, ages etc. Given this, I decided to model the current pet sales market. In particular, I wanted to see whether I would be able to build a model that could accurately predict the prices of individual pets based on their attributes. I decided to treat this as a regression problem (rather than binning pets in price bands to classify them) and to set a target of attaining an R2 of 0.80. Such a model would: 1) allow buyers to check whether an advert reflects current market prices, or older lockdown-inflated prices 2) allow buyers to determine which types of animals are within their budget, 3) allow sellers to figure out how best to competitively price their animals and 4) provide 3rd party platforms like Pets4Homes with a tool to inform their users about how listed prices compare to market rates (e.g. see Autotrader’s used car search as an example of this).
 
-## Data collection and wrangling <a name="Data collection and wrangling"></a>
+## Data collection and wrangling <a name="Data-collection-and-wrangling"></a>
 
 To base my model on up-to-date data about pet prices, I decided I would build a data set by scraping information about pet adverts off of an online pet sales platform, specifically, Pets4Homes.co.uk. I selected this website as it is the largest pet sales website in the UK. It also asks sellers to list a large amount of information about the pets they are selling, which I would be able to scrape and feed into my model. I planned to scrape all listings for all animal types on Pets4Homes during the week of the 9th to the 16th of January, 2023. Due to the structure of the Pets4Homes website, it was necessary to do this in two stages. First, I would need to collect the individual listing URLs from the search pages. Second, I would need to collect data about each listing from those URLs.
 
@@ -73,7 +73,7 @@ Fortunately, I was able to find a solution to this problem. Rather than using Be
 
 With this problem solved, I ran my 20,000+ pages of downloaded HTML through the updated extraction function and soon enough had a complete dataset 
 
-## Data cleaning <a name="Data cleaning"></a>
+## Data cleaning <a name="Data-cleaning"></a>
 
 In this section, I will review the data-cleaning steps that I took to prepare the data for EDA and predictive analysis. The uncleaned dataset consisted of 20211 rows and 39 features. The features were:
 
@@ -128,7 +128,7 @@ As you may be able to tell from the variables listed above, the initial dataset 
 
 I decided to begin with the low-hanging fruit. The first cleaning step I took was to check for any duplicate rows in the data, of which I found 718. These were all dropped. Next, I updated the types of any columns which had correctly formatted numerical information, which was wrongly typed (for instance, converting the price column from string type to float type). Finally, I dropped columns which I felt would not be useful. Specifically, these were advert_type (as all values were identical) and pet_available (as the column was about 50% NaNs, I wasn’t able to scrape an upload date to compare it to and, ultimately, I felt it wasn’t relevant to my original question).
 
-#### Seller & listing features <a name="Seller & listing features"></a>
+#### Seller & listing features <a name="Seller-&-listing-features"></a>
 
 With the easy cleaning tasks complete, I started on the columns relating to the advert and/or seller. Slightly less than half of the seller names were unique. Of those who appeared more than once, about 2/3rds were individuals and the remaining 3rd were organisations. Whilst the organisation’s names were given in full, the names of individuals were formatted as their first name followed by their surname initial  (e.g. ‘John S.’). Due to this, it was unclear whether two listings by individuals with the same seller_name value were listings by the same seller or simply sellers with similar names. Given this, I decided I would drop the seller_name column and replace it with a column which would specify the number of listings associated with a seller, called seller_n_listings. Given that I could not be if any individual had more than one listing, I set the value of seller_n_listings to 1 for all sellers, whereas for all organisations I used the number of times that they appeared in the seller_name column.
 
@@ -136,7 +136,7 @@ The location column included 6653 unique values, which were not consistently for
 
 As mentioned above, the seller_type and advertiser_type columns contained very similar information. seller_type only had two levels, indicating whether the seller was an organisation or an individual. advertiser_type had more granular detail, for instance, distinguishing between charities and for-profit organisations. Whereas seller_type had no missing information, advertiser_type had some NaNs. As such, I used the former to fill the gaps in the latter and then dropped the former. This completed the cleaning related to the sellers and adverts. Next was the cleaning relating to the pets being sold.
 
-#### Pet features <a name="Pet features"></a>
+#### Pet features <a name="Pet-features"></a>
 
 92 rows had NaNs for the breed column. On closer inspection, I discovered that all of these rows had completely unverified sellers and that the advert titles were extremely generic and many of them were duplicated (e.g. ‘Goldfish for sale’). I opened some of these adverts in my browser and found that for many of them, the animals in the photos were not even the same as the listed category. Given this, I assumed that these adverts were either erroneously generated, or possibly fishing scams. As such, I dropped these rows.
 
@@ -152,7 +152,7 @@ Both the cats and dogs categories had information relating to whether the pet wa
 
 Finally, there was a large number of columns which were specific to cats and/or dogs or horses. For each of these columns, any non-cat/dog/horse row contained NaNs. To address this, I added the value ‘Not applicable’ to these rows. For any cat/dog/horse rows with NaNs for these columns, I added the value ‘Unlisted’. Additionally, due to the very small number of non-NaN entries, I dropped the horse-specific origin and height columns and converted the dressage_level and jumping_level columns into binary columns simply indicating whether the horse had a dressage or jumping ranking.
 
-#### Cleaned data dictionary <a name="Cleaned data dictionary"></a>
+#### Cleaned data dictionary <a name="Cleaned-data-dictionary"></a>
 
 At this point, no NaNs remained. Title, description, url, advert_ID and the seller verification columns did not require any cleaning. The final cleaned data set was 19,271 rows and 35 columns, containing the following information:
 
@@ -199,7 +199,7 @@ At this point, no NaNs remained. Title, description, url, advert_ID and the sell
 
 Due to the large number of variables, I decided to approach the exploratory data analysis by breaking down the variables into their statistical data types. As such, I began looking at the continuous variables, followed by the binary variables, the categorical variables and finally the text variables. I will approach this overview of the EDA in the same fashion.
 
-### Continuous variables <a name="Continuous variables"></a>
+### Continuous variables <a name="Continuous-variables"></a>
 
 I began by using descriptive statistics and a z-scaled box plot (see below) to get a general overview of the continuous variables. These both showed that all the continuous variables had a strong right skew and some significant outliers. For n_images and seller_n_adverts, these outliers are plausible data points. For instance, one seller had 140 adverts - far more than most, but this seller was a business specialising in reptiles. The listing with the most images had 41, more than 4x the mean number of images (8.69), but I was able to confirm this was not an error by checking the listing. However, the max values for price, pet_age_in_days and fe/males_in_litter were clearly incorrect. The highest priced animal in the dataset was over £21m, the eldest animal was over 2000 years old and the largest litter contained 1300 puppies. These outliers needed to be removed.
 
@@ -227,7 +227,7 @@ All in all, these four plots indicate that it may be beneficial to create polyno
 
 Heat map showing correlations amongst continuous variables The heatmap below shows that n_images and fe/males_in_litter were the best linear predictors of price amongst the continuous variables. seller_n_advets was slightly negatively correlated with price. This is likely because animals with longer infancies (dogs, cats or horses), which necessarily require more time and care, are amongst the more expensive categories. Whereas those which could feasibly be bred in larger numbers (leading to more adverts), such as rabbits, rodents and fish, are among the cheaper pets. Due to the non-linear relationships uncovered above, it is unsurprising that there are no strong correlations here.
 
-### Binary variables <a name="Binary variables"></a>
+### Binary variables <a name="Binary-variables"></a>
 
 The first step with the binary variables was to separate the 'Not applicable' and 'Unlisted' values from the columns which would otherwise be purely binary. This allowed me to analyse them at the same time as the purely binary variables (i.e. those relating to verification). Where the column is applicable:
 66% of pets are microchipped
@@ -244,7 +244,7 @@ The first step with the binary variables was to separate the 'Not applicable' an
 Heat map showing correlations amongst binary variables and price The heatmap below allows us to see which binary variables have the strongest correlations with the target variable, price. These correlations can be seen on the bottom row of the heatmap. This row shows that an animal being microchipped, vaccinated, worm treated, being sold by the original breeder, being viewable with its mother and not being neutered are all positively correlated with price.
 Since most of these features are specific to dogs and cats and these animals are among the more expensive categories, I wanted to check that these positive correlations were not simply due to them being associated with cats and dogs. As such, I created a 2nd heatmap below the first which displays the correlations among the sample variables, but for cats and dogs only. Whilst the 2nd heatmap shows positive correlations between the variables mentioned above and the target variable, the size of the correlations has reduced considerably. This is particularly true for worm_treated_yes and neutered_no (the size of which becomes negligible).
 
-### Categorical variables <a name="Categorical variables"></a>
+### Categorical variables <a name="Categorical-variables"></a>
 
 There were 8 categorical variables (category, advert_location, advertiser_type, breed, pet_colour, pet_sex, category_1, category_2). For each of these, I created a bar chart indicating the value counts for each level of that particular variable. Each has a small section of markdown discussing the graph above it.
 category - by far the most common category of pets was dogs, which made up almost half of the dataset. There were more than twice as many dog listings as the 2nd most common category, cats. Given how much the prices vary between the different categories and how few instances there are of both the horses and invertebrates categories (amongst the most and least expensive categories), it may be difficult to make accurate predictions across all categories.
@@ -259,7 +259,7 @@ pet_colour - This variable needed some additional processing as some animals had
 category_1/category_2 These two variables only apply to horses and specify the primary and secondary categories to which the horse belongs. By far the most common category_1 value was allrounder. The most common category_2 value was other. Given this, and the fact that horses make up a very small percentage of the overall dataset, I did not expect these features to be particularly useful for predicting price.
 
 
-### Text variables <a name="Text variables"></a>
+### Text variables <a name="Text-variables"></a>
 
 Both the title and description columns contained raw text. As such, it was necessary to do some further processing on these before they could be analysed. I vectorised both using a term-frequency inverse document-frequency (tf–idf) vectoriser, which reflects how important a word is for each entry in either column. Specifically, a word’s tf–idf value increases in proportion to the number of times that word appears in a specific title or description entry (i.e. the ‘document’) and is offset by the number of entries in the column (i.e. the ‘corpus’) that contain the word. Having calculated this for each column, I then found the correlation between each word appearing in a row and the target variable, price. I plotted these correlations on bar charts (see below). The correlations are somewhat unsurprising given what we have already learnt about the variables above. For instance, the term which most strongly correlates with the price is ‘kc’ (as in kennel club) for both the title and description columns. 
 
@@ -267,21 +267,20 @@ Both the title and description columns contained raw text. As such, it was neces
 
 Finally, having completed the EDA, I began modelling the data. In this section, I will outline the small number of steps I took to prepare the data for modelling, the selection of models I tested, which performed best and the final results of the project.
 
-### Feature engineering <a name="Feature engineering"></a>
+### Feature engineering <a name="Feature-engineering"></a>
 
 All features discussed in the EDA section were included in the modelling stage, except the advert_ID and url (as these are reference features only, not predictors) and the two text variables, title and description (or the vectorised versions of them). I chose not to include the text variables as the EDA suggested that they would not add any information not already captured by the other features. Additionally, it would not be possible to use all of the vectorised words, as this would have left me with more features than instances. As such, I would have needed to find some threshold by which to exclude some of these. I considered using the correlations discussed above for this but ultimately would have been choosing an arbitrary threshold. I plan to explore this further in future work.
 
 As discussed during the EDA, all of the continuous variables had non-linear relationships with the target variable. As such, I created polynomial features for these. I also dummified the categorical variables.
-
-### Splitting and scaling the data <a name="Splitting and scaling the data"></a>
+### Splitting and scaling the data <a name="Splitting-and-scaling-the-data"></a>
 
 I split the data set into the target (price) and a set of predictors and then further split these into a train and test set (with the test set consisting of 20% of the total instances). Because the target variable has a very strong right skew, I used stratification when splitting the data. This allowed me to ensure that the distribution of the target in the training and test sets was similar. This can be seen in the histograms below.  
 
-### Building models <a name="Building models"></a>
+### Building models <a name="Building-models"></a>
 
 I began by trying a large number of model types with some fairly standard values to see what kinds of baseline performance I could expect from each model type. After doing this, I selected the 4 most promising models to work on with parameter tuning. I then performed a deeper analysis of the best of the tuned models. Specifically, this involved looking at the coefficients/feature importances to determine which are most influential on the model's predictions and an analysis of the residuals. Finally, I built a stacking ensemble model from the best tuned models to see whether it could outperform the single best model.
 
-#### Initial models <a name="Initial models"></a>
+#### Initial models <a name="Initial-models"></a>
 
 I fit 9 different model types on the data and returned their training and test set scores. With this information, we can get a general impression of the performance of each model and whether it is over or underfitting the data.
 I used 3 regularised linear regression models. These are; ridge, LASSO and elastic net regression.
@@ -297,7 +296,7 @@ The extra trees regressor was more similar to that of the ridge model (i.e. slig
 Finally, the gradient boosting regressor had the best test set performance of any of the models (R2: 0.65), but with a training set R2 of 0.92, it had massively overfit the data. As such, with some parameter tuning and regularisation, this could be a promising model.
 In sum, I selected four models to take into the parameter tuning stage. These are LASSO, elastic net, random forest and gradient-boosting regression.
 
-#### Parameter tuning <a name="Parameter tuning"></a>
+#### Parameter tuning <a name="Parameter-tuning"></a>
 
 This section summarises the parameter tuning steps taken for the four best models.
 
@@ -318,7 +317,7 @@ The best estimator found by the 1st round of parameter tuning reached a test set
 Gradient boosting
 Gradient boosting was the best of the initial models (with the highest test set R2), but also the most overfit model. Given this, I decided to try to test the effects of halving and doubling both of the parameters specified in the original model. I also added n_estimators to the grid search to counterbalance the effect of varying the learning rate. Unfortunately, I had to stop the parameter early as it was taking an extremely long time to run. I am planning to re-run it in future work. Instead, I attempted some manual parameter tuning. However, I was only able to attain a very small improvement in the model's test set R2 (~0.007). Whilst this is not much of an improvement, it does mean that gradient-boosted regression remains the strongest of the models.
 
-#### Comparing models <a name="Comparing models"></a>
+#### Comparing models <a name="Comparing-models"></a>
 
 For each of the tuned models, I have generated four plots. These are; a bar chart showing either the 20 largest (absolute valued) coefficients or 20 most important features, a scatter plot showing the model's predictions against the true values for the target, a histogram showing the distribution of the model's residuals and a Q-Q plot, also showing the distribution of the model's residuals.
 Between the four models, the scatterplots, histograms and Q-Q plots are highly similar. All four scatter plots indicate that the models have a slight tendency to underestimate the prices of the listings. Also, the models were unable to replicate sellers’ tendency to price their listings according to round numbers (e.g. £500, £1000 etc.).
@@ -331,7 +330,7 @@ Whilst these models could be used to predict the price of a pet listing with rea
 Stacking ensemble
 I also experimented with creating a stacking ensemble with the four best models as the base estimators and a gradient-boosting regressor as the meta-learner. The model had a worse test set R2 than the gradient boosting regressor. Further analysis of the distribution of errors between models may be able to explain why this is the case.
 
-## Conclusions and next steps <a name="Conclusions and next steps"></a>
+## Conclusions and next steps <a name="Conclusions-and-next-steps"></a>
 In this project, I set out to build a dataset representing the current state of the UK pet sales market. I did this by scraping user-generated listings from the popular pet sales platform, Pets4Homes. After cleaning the data, I had created a dataset with almost 20,000 instances and 35 features. Through EDA, I discovered that many of these features varied significantly between animal types. However, it did seem that many of these features could be decent predictors for pet prices. In the modelling stage, I experimented with several models and ultimately attained a peak test set R2 performance of 0.65 using a gradient-boosting regressor. All of the models tended to underestimate the target variable, which I suspect is due to its strong right skew. I was unable to build a model which could meet my original R2 target of 0.80+. As such, further improvements will need to be made before these models should be deployed for use by pet sellers and buyers. 
 
 Going forward, I will be working to improve this project with the goal of building a model which can attain my original target R2 (0.80+). Here are some of the steps that I plan to take:
