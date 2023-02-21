@@ -148,7 +148,7 @@ Finally, there was a large number of columns which were specific to cats and/or 
 
 At this point, no NaNs remained. Title, description, url, advert_ID and the seller verification columns did not require any cleaning. The final cleaned data set was 19,271 rows and 35 columns, containing the following information:
 
-| *Variable*           | *Description*                                                            |
+| *Variable name*           | *Variable description*                                                            |
 |----------------------|--------------------------------------------------------------------------|
 | title                | The title of the listing                                                 |
 | price                | The price of the listed pet                                              |
