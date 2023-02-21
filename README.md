@@ -1,7 +1,7 @@
 # How much is that doggy in my (browser) window?
 
 ## Table of contents
-* [TL;DR](#TL;DR)
+* [TL;DR] (#TL;DR)
 * [Introduction](#Introduction)
   * [Background](#Background)
   * [Goals](#Goals)
