@@ -6,7 +6,16 @@
   * [Background](#Background)
   * [Goals](#Goals)
 * [Data collection and wrangling](#Data collection and wrangling)
-* [Data Cleaning](#Data Cleaning)
+* [Data cleaning](#Data cleaning)
+  * [Seller & listing features](#Seller & listing features)
+  * [Pet features](#Pet features)
+  * [Cleaned data dictionary](#Cleaned data dictionary)
+* [EDA](#EDA)
+  * [Continuous variables](#Continuous variables)
+  * [Binary variables](#Binary variables)
+  * [Categorical variables](#Categorical variables)
+  
+  
 
 ## TL;DR <a name="TL;DR"></a>
 
@@ -38,11 +47,11 @@ Naturally, as demand rose and supply fell, there was only one possible outcome. 
 
 More recently, the UK’s ongoing cost of living crisis has made keeping or buying a pet financially prohibitive for many households. For instance, a 2021 survey by the Blue Cross and Edinburgh University found that 68% of respondents were concerned about the impact of the rising cost of living on their ability to care for their pets. This has sadly resulted in unprecedented numbers of people attempting to rehome their pets via animal shelters, or simply abandoning them outright. Between the 1st of January and the 31st of October, the Dogs Trust received 42,000 inquiries from dog owners about rehoming, 48% more than in the same period the year prior. Between January and July 2021, the RSPCA received 18,375  animal abandonment reports, for the same period in 2022 this figure had increased by ~25%, to 22,908 
 
-#### Goals <div id="Goals"></a>
+#### Goals <a name="Goals"></a>
 
 The extreme fluctuations seen in the UK’s demand for and supply of pets over the last few years have caused significant turbulence in pet prices. As such, it has become difficult for both sellers and buyers to know what is a fair price (or at least the market rate) for pets of different species, breeds, ages etc. Given this, I decided to model the current pet sales market. In particular, I wanted to see whether I would be able to build a model that could accurately predict the prices of individual pets based on their attributes. I decided to treat this as a regression problem (rather than binning pets in price bands to classify them) and to set a target of attaining an R2 of 0.80. Such a model would: 1) allow buyers to check whether an advert reflects current market prices, or older lockdown-inflated prices 2) allow buyers to determine which types of animals are within their budget, 3) allow sellers to figure out how best to competitively price their animals and 4) provide 3rd party platforms like Pets4Homes with a tool to inform their users about how listed prices compare to market rates (e.g. see Autotrader’s used car search as an example of this).
 
-## Data collection and wrangling
+## Data collection and wrangling <a name="Data collection and wrangling"></a>
 
 To base my model on up-to-date data about pet prices, I decided I would build a data set by scraping information about pet adverts off of an online pet sales platform, specifically, Pets4Homes.co.uk. I selected this website as it is the largest pet sales website in the UK. It also asks sellers to list a large amount of information about the pets they are selling, which I would be able to scrape and feed into my model. I planned to scrape all listings for all animal types on Pets4Homes during the week of the 9th to the 16th of January, 2023. Due to the structure of the Pets4Homes website, it was necessary to do this in two stages. First, I would need to collect the individual listing URLs from the search pages. Second, I would need to collect data about each listing from those URLs.
 
@@ -56,7 +65,7 @@ Fortunately, I was able to find a solution to this problem. Rather than using Be
 
 With this problem solved, I ran my 20,000+ pages of downloaded HTML through the updated extraction function and soon enough had a complete dataset 
 
-## Data Cleaning
+## Data cleaning <a name="Data cleaning"></a>
 
 In this section, I will review the data-cleaning steps that I took to prepare the data for EDA and predictive analysis. The uncleaned dataset consisted of 20211 rows and 39 features. The features were:
 
@@ -111,7 +120,7 @@ As you may be able to tell from the variables listed above, the initial dataset 
 
 I decided to begin with the low-hanging fruit. The first cleaning step I took was to check for any duplicate rows in the data, of which I found 718. These were all dropped. Next, I updated the types of any columns which had correctly formatted numerical information, which was wrongly typed (for instance, converting the price column from string type to float type). Finally, I dropped columns which I felt would not be useful. Specifically, these were advert_type (as all values were identical) and pet_available (as the column was about 50% NaNs, I wasn’t able to scrape an upload date to compare it to and, ultimately, I felt it wasn’t relevant to my original question).
 
-#### Seller & listing features
+#### Seller & listing features <a name="Seller & listing features"></a>
 
 With the easy cleaning tasks complete, I started on the columns relating to the advert and/or seller. Slightly less than half of the seller names were unique. Of those who appeared more than once, about 2/3rds were individuals and the remaining 3rd were organisations. Whilst the organisation’s names were given in full, the names of individuals were formatted as their first name followed by their surname initial  (e.g. ‘John S.’). Due to this, it was unclear whether two listings by individuals with the same seller_name value were listings by the same seller or simply sellers with similar names. Given this, I decided I would drop the seller_name column and replace it with a column which would specify the number of listings associated with a seller, called seller_n_listings. Given that I could not be if any individual had more than one listing, I set the value of seller_n_listings to 1 for all sellers, whereas for all organisations I used the number of times that they appeared in the seller_name column.
 
@@ -119,7 +128,7 @@ The location column included 6653 unique values, which were not consistently for
 
 As mentioned above, the seller_type and advertiser_type columns contained very similar information. seller_type only had two levels, indicating whether the seller was an organisation or an individual. advertiser_type had more granular detail, for instance, distinguishing between charities and for-profit organisations. Whereas seller_type had no missing information, advertiser_type had some NaNs. As such, I used the former to fill the gaps in the latter and then dropped the former. This completed the cleaning related to the sellers and adverts. Next was the cleaning relating to the pets being sold.
 
-#### Pet features
+#### Pet features <a name="Pet features"></a>
 
 92 rows had NaNs for the breed column. On closer inspection, I discovered that all of these rows had completely unverified sellers and that the advert titles were extremely generic and many of them were duplicated (e.g. ‘Goldfish for sale’). I opened some of these adverts in my browser and found that for many of them, the animals in the photos were not even the same as the listed category. Given this, I assumed that these adverts were either erroneously generated, or possibly fishing scams. As such, I dropped these rows.
 
@@ -135,51 +144,54 @@ Both the cats and dogs categories had information relating to whether the pet wa
 
 Finally, there was a large number of columns which were specific to cats and/or dogs or horses. For each of these columns, any non-cat/dog/horse row contained NaNs. To address this, I added the value ‘Not applicable’ to these rows. For any cat/dog/horse rows with NaNs for these columns, I added the value ‘Unlisted’. Additionally, due to the very small number of non-NaN entries, I dropped the horse-specific origin and height columns and converted the dressage_level and jumping_level columns into binary columns simply indicating whether the horse had a dressage or jumping ranking.
 
-#### Cleaned data dictionary 
+#### Cleaned data dictionary <a name="Cleaned data dictionary"></a>
 
 At this point, no NaNs remained. Title, description, url, advert_ID and the seller verification columns did not require any cleaning. The final cleaned data set was 19,271 rows and 35 columns, containing the following information:
 
-'title': 'The title of the listing',
-'price': 'The price of the listed pet',
-'url' : 'The URL of the listing',
-'phone_verified' : "Whether the seller's profile has been verified by phone",
-'email_verified' : "Whether the seller's profile has been verified by email",
-'facebook_verified' : "Whether the seller's profile has been verified by Facebook",
-'google_verified' : "Whether the seller's profile has been verified by Google",
-'n_images' : 'The number of images included in the listing',
-'category' : 'The type of animal',
-'advert_id' : "The listing's unique ID",
-'advert_location' : "The location of the seller",
-'advertiser_type' : 'The type of seller',
-'breed' : 'The breed of the pet(s) being sold',
-'pet_age' : 'The age of the pet(s) being sold',
-'pet_colour' : 'The colour of the pet(s) being sold',
-'pet_sex' : 'The sex of the pet(s) being sold',
-'description' : 'The listing description provided by the seller',
-'health_checked' : 'Whether the pets(s) have been health checked',
-'microchipped' : 'Whether the pets(s) have been microchipped',
-'neutered' : "Whether the pet(s) have been neutered",
-'vaccinated' : "Whether the pet(s) have been vaccinated",
-'worm_treated' : "Whether the pet(s) have been worm treated",
-'registered' : "Whether the pet(s) are registered with a breeders or owners club/society",
-'original_breeder' : 'Whether the seller is the original breeder of the pet',
-'viewable_with_mother' : "Whether the pet is viewable with its mother",
-'category_1' : 'The primary category of a horse', 
-'category_2' : 'The secondary category of a horse',
-'height' : 'The height of a horse (measured in hands)',
-'origin' : 'The origin of a horse',
-'jumping_horse' : 'Whether a horse does show jumping',
-‘dressage_horse' : 'Whether a horse does dressage',
-'seller_n_adverts' : 'The number of adverts that seller had at the time of data collection',
-'pets_age_in_days' : "The age of the pet(s), measured in days",
-'males_in_litter' : "The number of male pets in the litter",
-'females_in_litter' : "The number of female pets in the litter"
+| *Variable*           | *Description*                                                            |
+|----------------------|--------------------------------------------------------------------------|
+| title                | The title of the listing                                                 |
+| price                | The price of the listed pet                                              |
+| url                  | The URL of the listing                                                   |
+| phone_verified       | Whether the seller's profile has been verified by phone                  |
+| email_verified       | Whether the seller's profile has been verified by email                  |
+| facebook_verified    | Whether the seller's profile has been verified by Facebook               |
+| google_verified      | Whether the seller's profile has been verified by Google                 |
+| n_images             | The number of images included in the listing                             |
+| category             | The type of animal                                                       |
+| advert_id            | The listing's unique ID                                                  |
+| advert_location      | The location of the seller                                               |
+| advertiser_type      | The type of seller                                                       |
+| breed                | The breed of the pet(s) being sold                                       |
+| pet_age              | The age of the pet(s) being sold                                         |
+| pet_colour           | The colour of the pet(s) being sold                                      |
+| pet_sex              | The sex of the pet(s) being sold                                         |
+| description          | The listing description provided by the seller                           |
+| health_checked       | Whether the pets(s) have been health checked                             |
+| microchipped         | Whether the pets(s) have been microchipped                               |
+| neutered             | Whether the pet(s) have been neutered                                    |
+| vaccinated           | Whether the pet(s) have been vaccinated                                  |
+| worm_treated         | Whether the pet(s) have been worm treated                                |
+| registered           | Whether the pet(s) are registered with a breeders or owners club/society |
+| original_breeder     | Whether the seller is the original breeder of the pet                    |
+| viewable_with_mother | Whether the pet is viewable with its mother                              |
+| category_1           | The primary category of a horse                                          |
+| category_2           | The secondary category of a horse                                        |
+| height               | The height of a horse (measured in hands)                                |
+| origin               | The origin of a horse                                                    |
+| jumping_horse        | Whether a horse does show jumping                                        |
+| dressage_horse       | Whether a horse does dressage                                            |
+| seller_n_adverts     | The number of adverts that seller had at the time of data collection     |
+| pets_age_in_days     | The age of the pet(s), measured in days                                  |
+| males_in_litter      | The number of male pets in the litter                                    |
+| females_in_litter    | The number of female pets in the litter                                  |
 
 
-## EDA
+## EDA <a name="EDA"></a>
+
 Due to the large number of variables, I decided to approach the exploratory data analysis by breaking down the variables into their statistical data types. As such, I began looking at the continuous variables, followed by the binary variables, the categorical variables and finally the text variables. I will approach this overview of the EDA in the same fashion.
 
-### Continuous variables
+### Continuous variables <a name="Continuous variables"></a>
 
 I began by using descriptive statistics and a z-scaled box plot (see below) to get a general overview of the continuous variables. These both showed that all the continuous variables had a strong right skew and some significant outliers. For n_images and seller_n_adverts, these outliers are plausible data points. For instance, one seller had 140 adverts - far more than most, but this seller was a business specialising in reptiles. The listing with the most images had 41, more than 4x the mean number of images (8.69), but I was able to confirm this was not an error by checking the listing. However, the max values for price, pet_age_in_days and fe/males_in_litter were clearly incorrect. The highest priced animal in the dataset was over £21m, the eldest animal was over 2000 years old and the largest litter contained 1300 puppies. These outliers needed to be removed.
 
@@ -207,7 +219,7 @@ All in all, these four plots indicate that it may be beneficial to create polyno
 
 Heat map showing correlations amongst continuous variables The heatmap below shows that n_images and fe/males_in_litter were the best linear predictors of price amongst the continuous variables. seller_n_advets was slightly negatively correlated with price. This is likely because animals with longer infancies (dogs, cats or horses), which necessarily require more time and care, are amongst the more expensive categories. Whereas those which could feasibly be bred in larger numbers (leading to more adverts), such as rabbits, rodents and fish, are among the cheaper pets. Due to the non-linear relationships uncovered above, it is unsurprising that there are no strong correlations here.
 
-### Binary variables
+### Binary variables <a name="Binary variables"></a>
 
 The first step with the binary variables was to separate the 'Not applicable' and 'Unlisted' values from the columns which would otherwise be purely binary. This allowed me to analyse them at the same time as the purely binary variables (i.e. those relating to verification). Where the column is applicable:
 66% of pets are microchipped
@@ -224,10 +236,7 @@ The first step with the binary variables was to separate the 'Not applicable' an
 Heat map showing correlations amongst binary variables and price The heatmap below allows us to see which binary variables have the strongest correlations with the target variable, price. These correlations can be seen on the bottom row of the heatmap. This row shows that an animal being microchipped, vaccinated, worm treated, being sold by the original breeder, being viewable with its mother and not being neutered are all positively correlated with price.
 Since most of these features are specific to dogs and cats and these animals are among the more expensive categories, I wanted to check that these positive correlations were not simply due to them being associated with cats and dogs. As such, I created a 2nd heatmap below the first which displays the correlations among the sample variables, but for cats and dogs only. Whilst the 2nd heatmap shows positive correlations between the variables mentioned above and the target variable, the size of the correlations has reduced considerably. This is particularly true for worm_treated_yes and neutered_no (the size of which becomes negligible).
 
-
-
-
-### Categorical variables
+### Categorical variables <a name="Categorical variables"></a>
 
 There were 8 categorical variables (category, advert_location, advertiser_type, breed, pet_colour, pet_sex, category_1, category_2). For each of these, I created a bar chart indicating the value counts for each level of that particular variable. Each has a small section of markdown discussing the graph above it.
 category - by far the most common category of pets was dogs, which made up almost half of the dataset. There were more than twice as many dog listings as the 2nd most common category, cats. Given how much the prices vary between the different categories and how few instances there are of both the horses and invertebrates categories (amongst the most and least expensive categories), it may be difficult to make accurate predictions across all categories.
