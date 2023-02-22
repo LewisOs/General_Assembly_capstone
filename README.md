@@ -384,7 +384,7 @@ Given the similarity between the four models on these points, I suspect that the
 Where the models differ somewhat is in the bar charts indicating strong/important features/coefficients. The two linear regression models both selected registered_1.0 as their largest coefficient, whereas the most important feature for the two ensemble models was neutered_no (which is not even in the LASSO model's top 20). Overall however, all models used predictors we would expect to indicate price quite strongly, i.e. variables which are associated with higher quality breeders for cats and dogs (e.g. vaccinated_yes) and the more expensive categories, such as horses, cats and dogs. For future work, I would like to take a deeper look at the coefficients for each animal breed, sorted by animal category, to determine which breeds best predict price.
 Whilst these models could be used to predict the price of a pet listing with reasonable accuracy, their tendency, when wrong, to be wrong by a very large margin (£1000s) does make them quite limited. 
 
-*Stacking ensemble*
+**Stacking ensemble**
 I also experimented with creating a stacking ensemble with the four best models as the base estimators and a gradient-boosting regressor as the meta-learner. The model had a worse test set R2 than the gradient boosting regressor. Further analysis of the distribution of errors between models may be able to explain why this is the case.
 
 ## Conclusions and next steps <a name="Conclusions-and-next-steps"></a>
