@@ -44,8 +44,7 @@ During the COVID-19 pandemic, British people sought cures for their lockdown blu
 
 In fact, spending time with pets was such a popular solution to our collective cabin fever that the demand for pets increased massively during the pandemic. From the week of the 23rd of March 2020, when the first UK COVID-19 lockdown came into effect, to the week of the 10th of May 2020, when the conditional plan for lifting the lockdown was announced, Google searches from the UK for the term ‘puppies for sale’ almost tripled (see graph below). Pets sales website Pets4Homes reported that the average number of buyers competing for each pet on their platform had risen to 420 by May 2020. According to the Pet Food Manufacturers' Association, [between the beginning of the pandemic and March 2021, a total of 3.2 million households in the UK acquired a pet, leading to national pet food shortages](https://www.bbc.co.uk/news/business-56362987). This surge in demand was so great that Lee Gibson, then UK Commercial Director at Pets4Homes, described the pandemic as ‘what is likely to be the most significant demand increase for pets in modern history’.
 
-[EMBED GOOGLE ANALYTICS “puppies for sale” CHART](<script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/3261_RC05/embed_loader.js"></script> <script type="text/javascript"> trends.embed.renderExploreWidget("TIMESERIES", {"comparisonItem":[{"keyword":"puppies for sale","geo":"GB","time":"2019-01-01 2023-02-15"}],"category":0,"property":""}, {"exploreQuery":"date=2019-01-01%202023-02-15&geo=GB&q=puppies%20for%20sale","guestPath":"https://trends.google.co.uk:443/trends/embed/"}); </script>)
-
+[EMBED GOOGLE ANALYTICS “puppies for sale” CHART
 
 As this historic growth in the demand for pets unfolded, supply dwindled. Pandemic restrictions disrupted essential aspects of the businesses of many British pet breeders. For instance, in-person viewings (which are recommended to ensure that the seller is genuine and to check that the pet is healthy and has been raised in an appropriate environment) became difficult or impossible due to social distancing rules and restrictions on travel. These disruptions were so significant that [many breeders stopped advertising their litters altogether](https://docs.google.com/presentation/d/e/2PACX-1vTlNzbjXcTaOXhd_wWJmZdASWHw6rGLxPyzTlBiAxrii0TzAHPXKzF02jWkdR5PgJxbUlDYztgJ_mHu/pub?start=false&loop=false&delayms=3000&slide=id.ga8a2040b76_0_35). 
 
@@ -203,7 +202,9 @@ Due to the large number of variables, I decided to approach the exploratory data
 
 I began by using descriptive statistics and a z-scaled box plot (see below) to get a general overview of the continuous variables. These both showed that all the continuous variables had a strong right skew and some significant outliers. For n_images and seller_n_adverts, these outliers are plausible data points. For instance, one seller had 140 adverts - far more than most, but this seller was a business specialising in reptiles. The listing with the most images had 41, more than 4x the mean number of images (8.69), but I was able to confirm this was not an error by checking the listing. However, the max values for price, pet_age_in_days and fe/males_in_litter were clearly incorrect. The highest priced animal in the dataset was over £21m, the eldest animal was over 2000 years old and the largest litter contained 1300 puppies. These outliers needed to be removed.
 
-Based on the above boxplot, I removed any values which were more than 20 stds from the mean of each variable. I then removed some more values based on background knowledge. For instance, according to Pets4Homes, dog "litters of over eight pups are considered to be large, and over ten is rare, although up to seventeen live births have been recorded in some cases!". As such, I decided to drop any rows where the sum of males_in_litter and females_in_litter was greater than 12. I also removed any rows where the animal’s pets_age_in_days value was suspiciously large for its category (e.g. a row with a dog with a pets_age_in_days equivalent to more than 18 years). I also discovered that there were several adverts with prices like £12,345 or £1,234 with unverified sellers, few photos, generic titles or extremely brief descriptions. As these adverts seemed to be fake, I removed any listings with prices matching these values. 
+![boxplot continuous uncleaned](/project-capstone/capstone_images/boxplots-continuous-uncleaned.png)
+
+Based on the above boxplot, I removed any values which were more than 20 stds from the mean of each variable. I then removed some more values based on background knowledge. For instance, according to Pets4Homes, dog "[litters of over eight pups are considered to be large, and over ten is rare, although up to seventeen live births have been recorded in some cases!](https://www.pets4homes.co.uk/pet-advice/factors-that-determine-the-size-of-a-litter.html)". As such, I decided to drop any rows where the sum of males_in_litter and females_in_litter was greater than 12. I also removed any rows where the animal’s pets_age_in_days value was suspiciously large for its category (e.g. a row with a dog with a pets_age_in_days equivalent to more than 18 years). I also discovered that there were several adverts with prices like £12,345 or £1,234 with unverified sellers, few photos, generic titles or extremely brief descriptions. As these adverts seemed to be fake, I removed any listings with prices matching these values. 
 
 After removing these outliers, I recreated the z-scaled boxplot (see below). All the continuous variables still had values beyond the IQR * 1.5 range (a common threshold for outliers). However, since they also all had a strong right skew, the values were fairly continually distributed through their upper ranges and I had already performed domain-knowledge informed outlier removal, I decided to leave these values unchanged. With that handled, I was able to make the following observations about the continuous variables:
 Price - This was the target variable. There was a very large range in price, from 20p up to £11,500. This was likely due to the very different animal categories in the dataset. As such, I have taken a further look at the distribution of prices amongst the individual animal categories below. As both the box plot and mean (£710.45) and mode (£550) show, price has a strong right skew.
@@ -212,37 +213,49 @@ seller_n_adverts - A significant proportion of the adverts were listed by a sell
 pet_age_in_days - Similarly to price, this variable has a very strong right skew. Values range from newborn (i.e. 0 days) to 25 years (9125 days). I have included an individual breakdown by animal category below.
 fe/males_in__litter - These columns showed a strong right skew, but this is due to the large number of 0s for animals where this value is either not applicable or unlisted. It may also be worth creating polynomial features for these as, according to Pets4Homes: "Overly large litters may lead to problems with delivery due to exhaustion, and the possibility of stillborn pups. Having a significant amount of puppies for the dam to feed after the birth can also pose problems, in terms of presenting difficulties with nursing all of the puppies, and ensuring that the dam stays hydrated and eats enough to support all of the puppies."
 
+![boxplots continuous cleaned](/project-capstone/capstone_images/boxplots-continuous-cleaned.png)
 
 Histograms showing the distribution of price by animal category All of the histograms for pet prices subsetted by pet category still showed a strong right skew. However, the ranges between animal types varied greatly. For instance, the price range for invertebrates maxes out at around £250, whereas the price range for horses maxes out at around £7000. Clearly, category should be an important predictor for price.
 The categories with the least extreme right skew were dogs, cats and horses. These were also the categories with the largest maximum prices. This indicated that the outlier removal I had already done had had little impact on the animal types with narrower price ranges. Given the extent of the skew for these categories, I decided to perform further outlier removal on them. Specifically, based on the z-scaled box plots below the histograms, I removed values more than 8 standard deviations from the mean of each category. This will remove some of the most extreme and suspicious outliers whilst keeping the main distributions intact.
 
+![histograms showing the distribution of price by animal category](/project-capstone/capstone_images/histograms-price-category.png)
+
 Histograms showing the distribution of pet age by animal category. As with the previous set of histograms, the histograms showing pet age by animal category all exhibited considerable right skew over ranges that were particular to each category. This was unsurprising as pets are most commonly sold as infants. This skew was least pronounced for horses. However, the zscaled box plots below indicated that this skew is less extreme than for price and most categories had a more regularly/densely populated tail, rather than a few extreme outliers. The exceptions to this were invertebrates, rodents and possibly fish. Both invertebrates and rodents had a single value which was extremely far from the main distribution. I removed these two outliers but otherwise leave pet age as is.
 
+![histograms showing the distribution of pet age by animal category](/project-capstone/capstone_images/histograms-age-category.png)
+
 Checking the linearity of the relationships between the continuous variables and the target. The four scatter plots below show the relationship between litter size (i.e. males_in_litter + females_in_litter), pets_age_in_days, n_images and n_adverts with the target variable. Each plot has an order 2 regression line fitted through it (n.b. I experimented with other orders, but found 2 the best fit for each). These plots suggest that all of the continuous variables have a nonlinear relationship with the target. Specifically:
-smaller and larger litters were associated with a lower price, whereas mid-sized litters were associated with higher prices. This reflects the information from Pets4Homes about healthy litter sizes quoted above.
-younger and older pets were associated with higher prices, whereas those in the mid-range were associated with lower prices. This is likely because people are typically interested in buying their pet when it is an infant and as pets age, they become cheaper. However, this would only be up to a point, as some long-lived animals (such as horses, large parrots, large tortoises etc) can be particularly expensive.
-smaller and large numbers of images were associated with lower prices, whereas listings with 25 to 30 images were associated with higher prices. I would speculate that this is because more images, in and of itself, is typically a good thing, but very high numbers of images may be associated with other factors which are associated with lower prices. For instance, larger litters may have more images. Animals which are sometimes bred in large numbers (e.g. invertebrates, fish, birds, rodents, rabbits etc.) would require more images and are amongst the cheaper categories.
-Smaller values for n_adverts were associated with a higher price. This makes sense, as sellers who list animals which are more time or effort intensive to breed are likely to list fewer animals, but charge greater amounts for them. Whilst the regression line does curve back up as the number of adverts climbs, this is likely due to the single seller with 140 adverts, who may charge more than other sellers who list multiple adverts.
+* Smaller and larger litters were associated with a lower price, whereas mid-sized litters were associated with higher prices. This reflects the information from Pets4Homes about healthy litter sizes quoted above.
+* Younger and older pets were associated with higher prices, whereas those in the mid-range were associated with lower prices. This is likely because people are typically interested in buying their pet when it is an infant and as pets age, they become cheaper. However, this would only be up to a point, as some long-lived animals (such as horses, large parrots, large tortoises etc) can be particularly expensive.
+* Smaller and large numbers of images were associated with lower prices, whereas listings with 25 to 30 images were associated with higher prices. I would speculate that this is because more images, in and of itself, is typically a good thing, but very high numbers of images may be associated with other factors which are associated with lower prices. For instance, larger litters may have more images. Animals which are sometimes bred in large numbers (e.g. invertebrates, fish, birds, rodents, rabbits etc.) would require more images and are amongst the cheaper categories.
+* Smaller values for n_adverts were associated with a higher price. This makes sense, as sellers who list animals which are more time or effort intensive to breed are likely to list fewer animals, but charge greater amounts for them. Whilst the regression line does curve back up as the number of adverts climbs, this is likely due to the single seller with 140 adverts, who may charge more than other sellers who list multiple adverts.
 All in all, these four plots indicate that it may be beneficial to create polynomial features for the continuous variables.
 
 Heat map showing correlations amongst continuous variables The heatmap below shows that n_images and fe/males_in_litter were the best linear predictors of price amongst the continuous variables. seller_n_advets was slightly negatively correlated with price. This is likely because animals with longer infancies (dogs, cats or horses), which necessarily require more time and care, are amongst the more expensive categories. Whereas those which could feasibly be bred in larger numbers (leading to more adverts), such as rabbits, rodents and fish, are among the cheaper pets. Due to the non-linear relationships uncovered above, it is unsurprising that there are no strong correlations here.
 
+![Heat map showing correlations amongst continuous variables](/project-capstone/capstone_images/continuous-heatmap.png)
+
 ### Binary variables <a name="Binary-variables"></a>
 
 The first step with the binary variables was to separate the 'Not applicable' and 'Unlisted' values from the columns which would otherwise be purely binary. This allowed me to analyse them at the same time as the purely binary variables (i.e. those relating to verification). Where the column is applicable:
-66% of pets are microchipped
-6.5% of pets are neutered
-75% of pets are vaccinated
-91.6% of pets are worm treated
-96.6% of pets are being sold by the original breeder
-90.2% of pets are viewable with their mother
-~100% of sellers are phone verified (20 are not)
-~100% of sellers are email verified (41 are not)
-15% of sellers are Facebook verified
-15% of sellers are Google verified
+* 66% of pets are microchipped
+* 6.5% of pets are neutered
+* 75% of pets are vaccinated
+* 91.6% of pets are worm treated
+* 96.6% of pets are being sold by the original breeder
+* 90.2% of pets are viewable with their mother
+* ~100% of sellers are phone verified (20 are not)
+* ~100% of sellers are email verified (41 are not)
+* 15% of sellers are Facebook verified
+* 15% of sellers are Google verified
 
 Heat map showing correlations amongst binary variables and price The heatmap below allows us to see which binary variables have the strongest correlations with the target variable, price. These correlations can be seen on the bottom row of the heatmap. This row shows that an animal being microchipped, vaccinated, worm treated, being sold by the original breeder, being viewable with its mother and not being neutered are all positively correlated with price.
+
+![Heat map showing correlations amongst binary variables](/project-capstone/capstone_images/Binary-heatmap-all.png
+
 Since most of these features are specific to dogs and cats and these animals are among the more expensive categories, I wanted to check that these positive correlations were not simply due to them being associated with cats and dogs. As such, I created a 2nd heatmap below the first which displays the correlations among the sample variables, but for cats and dogs only. Whilst the 2nd heatmap shows positive correlations between the variables mentioned above and the target variable, the size of the correlations has reduced considerably. This is particularly true for worm_treated_yes and neutered_no (the size of which becomes negligible).
+
+![Heat map showing correlations amongst binary variables (cats & dogs only)(/project-capstone/capstone_images/Binary-heatmap-cats-and-dogs.png)
 
 ### Categorical variables <a name="Categorical-variables"></a>
 
