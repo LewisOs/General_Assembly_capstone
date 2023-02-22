@@ -218,11 +218,11 @@ fe/males_in__litter - These columns showed a strong right skew, but this is due 
 Histograms showing the distribution of price by animal category All of the histograms for pet prices subsetted by pet category still showed a strong right skew. However, the ranges between animal types varied greatly. For instance, the price range for invertebrates maxes out at around £250, whereas the price range for horses maxes out at around £7000. Clearly, category should be an important predictor for price.
 The categories with the least extreme right skew were dogs, cats and horses. These were also the categories with the largest maximum prices. This indicated that the outlier removal I had already done had had little impact on the animal types with narrower price ranges. Given the extent of the skew for these categories, I decided to perform further outlier removal on them. Specifically, based on the z-scaled box plots below the histograms, I removed values more than 8 standard deviations from the mean of each category. This will remove some of the most extreme and suspicious outliers whilst keeping the main distributions intact.
 
-![histograms showing the distribution of price by animal category](/project-capstone/capstone_images/histograms-price-category.png)
+![histograms showing the distribution of price by animal category](/project-capstone/capstone_images/Histograms-price-category.png)
 
 Histograms showing the distribution of pet age by animal category. As with the previous set of histograms, the histograms showing pet age by animal category all exhibited considerable right skew over ranges that were particular to each category. This was unsurprising as pets are most commonly sold as infants. This skew was least pronounced for horses. However, the zscaled box plots below indicated that this skew is less extreme than for price and most categories had a more regularly/densely populated tail, rather than a few extreme outliers. The exceptions to this were invertebrates, rodents and possibly fish. Both invertebrates and rodents had a single value which was extremely far from the main distribution. I removed these two outliers but otherwise leave pet age as is.
 
-![histograms showing the distribution of pet age by animal category](/project-capstone/capstone_images/histograms-age-category.png)
+![histograms showing the distribution of pet age by animal category](/project-capstone/capstone_images/Histograms-age-category.png)
 
 Checking the linearity of the relationships between the continuous variables and the target. The four scatter plots below show the relationship between litter size (i.e. males_in_litter + females_in_litter), pets_age_in_days, n_images and n_adverts with the target variable. Each plot has an order 2 regression line fitted through it (n.b. I experimented with other orders, but found 2 the best fit for each). These plots suggest that all of the continuous variables have a nonlinear relationship with the target. Specifically:
 * Smaller and larger litters were associated with a lower price, whereas mid-sized litters were associated with higher prices. This reflects the information from Pets4Homes about healthy litter sizes quoted above.
@@ -260,21 +260,36 @@ Since most of these features are specific to dogs and cats and these animals are
 ### Categorical variables <a name="Categorical-variables"></a>
 
 There were 8 categorical variables (category, advert_location, advertiser_type, breed, pet_colour, pet_sex, category_1, category_2). For each of these, I created a bar chart indicating the value counts for each level of that particular variable. Each has a small section of markdown discussing the graph above it.
-category - by far the most common category of pets was dogs, which made up almost half of the dataset. There were more than twice as many dog listings as the 2nd most common category, cats. Given how much the prices vary between the different categories and how few instances there are of both the horses and invertebrates categories (amongst the most and least expensive categories), it may be difficult to make accurate predictions across all categories.
-advert_location - There were 1163 unique locations. Only 408 of these had more than 10 listings, and only 23 had more than 100 listings. By far the most common location was London, which, with over 1000 adverts, had more than double the 2nd most common location, Birmingham.
 
-advertiser_type - There were 5 unique types of advertiser; individual, breeder, licensed breeder, organisation and company. Adverts listed by organisations and companies are extremely rare.
+*category* - by far the most common category of pets was dogs, which made up almost half of the dataset. There were more than twice as many dog listings as the 2nd most common category, cats. Given how much the prices vary between the different categories and how few instances there are of both the horses and invertebrates categories (amongst the most and least expensive categories), it may be difficult to make accurate predictions across all categories.
 
-breed - There were 382 unique breeds in the dataset. Of these, 178 had more than 10 listings and 48 had more than 100. Mixed breed was the most common value. However, as this can apply to any animal category, I added the category type to the breed value of any mixed breed animals (e.g. a mixed breed animal in the category dogs becomes 'Mixed Breed Dogs'). I did this as I suspect that an animal being mixed breed may have a different impact on price depending upon the type of animal it is (e.g. a mixed breed dog or cat may be less valuable than a pedigree one, but I do not know if this is likely to be the case for, say, reptiles or birds). After cleaning these values, the most common breed type was Guinea Pig.
+![category bar graph](/project-capstone/capstone_images/No-listings-by-category.png)
 
-pet_colour - This variable needed some additional processing as some animals had multiple values (e.g. 'Brown, black, white'). I separated these using a count vectoriser (n.b. this means single adverts may count towards multiple colour columns). The bar chart shows that all colours except violet and pink appeared in a listing more than 100 times. The most common colour entry was mixed colour, followed by black. For the majority of adverts listed, colour was either not applicable or unlisted.
+*advert_location* - There were 1163 unique locations. Only 408 of these had more than 10 listings, and only 23 had more than 100 listings. By far the most common location was London, which, with over 1000 adverts, had more than double the 2nd most common location, Birmingham.
 
-category_1/category_2 These two variables only apply to horses and specify the primary and secondary categories to which the horse belongs. By far the most common category_1 value was allrounder. The most common category_2 value was other. Given this, and the fact that horses make up a very small percentage of the overall dataset, I did not expect these features to be particularly useful for predicting price.
+![advert_location bar graph](/project-capstone/capstone_images/No-listings-by-advert-location.png)
 
+*advertiser_type* - There were 5 unique types of advertiser; individual, breeder, licensed breeder, organisation and company. Adverts listed by organisations and companies are extremely rare.
+
+![advertiser_type bar graph](/project-capstone/capstone_images/No-listings-by-advertiser-type.png)
+
+*breed* - There were 382 unique breeds in the dataset. Of these, 178 had more than 10 listings and 48 had more than 100. Mixed breed was the most common value. However, as this can apply to any animal category, I added the category type to the breed value of any mixed breed animals (e.g. a mixed breed animal in the category dogs becomes 'Mixed Breed Dogs'). I did this as I suspect that an animal being mixed breed may have a different impact on price depending upon the type of animal it is (e.g. a mixed breed dog or cat may be less valuable than a pedigree one, but I do not know if this is likely to be the case for, say, reptiles or birds). After cleaning these values, the most common breed type was Guinea Pig.
+
+![breed bar graph](/project-capstone/capstone_images/No-listings-by-breed.png)
+
+*pet_colour* - This variable needed some additional processing as some animals had multiple values (e.g. 'Brown, black, white'). I separated these using a count vectoriser (n.b. this means single adverts may count towards multiple colour columns). The bar chart shows that all colours except violet and pink appeared in a listing more than 100 times. The most common colour entry was mixed colour, followed by black. For the majority of adverts listed, colour was either not applicable or unlisted.
+
+![pet_colour bar graph](/project-capstone/capstone_images/No-listings-by-pet-colour.png)
+
+*category_1/category_2* These two variables only apply to horses and specify the primary and secondary categories to which the horse belongs. By far the most common category_1 value was allrounder. The most common category_2 value was other. Given this, and the fact that horses make up a very small percentage of the overall dataset, I did not expect these features to be particularly useful for predicting price.
+
+![category_1/category_2 bar graph](/project-capstone/capstone_images/No-listings-with-category1-category2.png)
 
 ### Text variables <a name="Text-variables"></a>
 
 Both the title and description columns contained raw text. As such, it was necessary to do some further processing on these before they could be analysed. I vectorised both using a term-frequency inverse document-frequency (tf–idf) vectoriser, which reflects how important a word is for each entry in either column. Specifically, a word’s tf–idf value increases in proportion to the number of times that word appears in a specific title or description entry (i.e. the ‘document’) and is offset by the number of entries in the column (i.e. the ‘corpus’) that contain the word. Having calculated this for each column, I then found the correlation between each word appearing in a row and the target variable, price. I plotted these correlations on bar charts (see below). The correlations are somewhat unsurprising given what we have already learnt about the variables above. For instance, the term which most strongly correlates with the price is ‘kc’ (as in kennel club) for both the title and description columns. 
+
+
 
 ## Modelling <a name="Modelling"></a>
 
