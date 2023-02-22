@@ -369,15 +369,15 @@ Gradient boosting was the best of the initial models (with the highest test set 
 
 For each of the tuned models, I have generated four plots. These are; a bar chart showing either the 20 largest (absolute valued) coefficients or 20 most important features, a scatter plot showing the model's predictions against the true values for the target, a histogram showing the distribution of the model's residuals and a Q-Q plot, also showing the distribution of the model's residuals. Between the four models, the scatterplots, histograms and Q-Q plots are highly similar. All four scatter plots indicate that the models have a slight tendency to underestimate the prices of the listings. Also, the models were unable to replicate sellers’ tendency to price their listings according to round numbers (e.g. £500, £1000 etc.).
 
-![Scatter plots]
+![Scatter plots](/project-capstone/capstone_images/comparing-models-scatter.png)
 
 The tendency to underestimate listing prices can also be seen in the histograms of all four models, as each has a longer left-hand tail than the right. The scale of these errors seems to be similar in each of the models.
 
-![Histograms]
+![Histograms](/project-capstone/capstone_images/comparing-models-histograms.png)
 
 Again, the Q-Q plots for all four models are highly similar. These confirm what can be seen in each model's histogram - the distribution of residuals is very tail-heavy, and the left tail is particularly skewed.
 
-![Q-Q plots]
+![Q-Q plots](/project-capstone/capstone_images/comparing-models-Q-Q.png)
 
 Given the similarity between the four models on these points, I suspect that the underestimation of prices is largely to do with the data itself. As discussed previously, both the target and many of the predictors have highly non-normal distributions. Despite my efforts in cleaning the data, several of the variables still have some mixed-signal because some binary columns are only relevant to certain animal types and thus that a 1 in that column indicates both that the record has that property and is of that animal type (and vice-versa). Given this, in future work, I would like to explore transforming the data to be more normally distributed and building separate models for the various animal categories.
 
