@@ -207,20 +207,22 @@ I began by using descriptive statistics and a z-scaled box plot (see below) to g
 Based on the above boxplot, I removed any values which were more than 20 stds from the mean of each variable. I then removed some more values based on background knowledge. For instance, according to Pets4Homes, dog "[litters of over eight pups are considered to be large, and over ten is rare, although up to seventeen live births have been recorded in some cases!](https://www.pets4homes.co.uk/pet-advice/factors-that-determine-the-size-of-a-litter.html)". As such, I decided to drop any rows where the sum of males_in_litter and females_in_litter was greater than 12. I also removed any rows where the animal’s pets_age_in_days value was suspiciously large for its category (e.g. a row with a dog with a pets_age_in_days equivalent to more than 18 years). I also discovered that there were several adverts with prices like £12,345 or £1,234 with unverified sellers, few photos, generic titles or extremely brief descriptions. As these adverts seemed to be fake, I removed any listings with prices matching these values. 
 
 After removing these outliers, I recreated the z-scaled boxplot (see below). All the continuous variables still had values beyond the IQR * 1.5 range (a common threshold for outliers). However, since they also all had a strong right skew, the values were fairly continually distributed through their upper ranges and I had already performed domain-knowledge informed outlier removal, I decided to leave these values unchanged. With that handled, I was able to make the following observations about the continuous variables:
-Price - This was the target variable. There was a very large range in price, from 20p up to £11,500. This was likely due to the very different animal categories in the dataset. As such, I have taken a further look at the distribution of prices amongst the individual animal categories below. As both the box plot and mean (£710.45) and mode (£550) show, price has a strong right skew.
-n_images - All listings had at least 1 image. The listing with the most had 41. n_images has a slight right skew (mean 8.76, mode 6).
+
+* *Price* - This was the target variable. There was a very large range in price, from 20p up to £11,500. This was likely due to the very different animal categories in the dataset. As such, I have taken a further look at the distribution of prices amongst the individual animal categories below. As both the box plot and mean (£710.45) and mode (£550) show, price has a strong right skew.
+* *n_images* - All listings had at least 1 image. The listing with the most had 41. n_images has a slight right skew (mean 8.76, mode 6).
 seller_n_adverts - A significant proportion of the adverts were listed by a seller with only one advert, although the majority are listed by sellers with two or more (mode 2). Although the max value is orders of magnitude larger than even the 75th percentile, I have decided to keep this range for the reasons discussed above.
-pet_age_in_days - Similarly to price, this variable has a very strong right skew. Values range from newborn (i.e. 0 days) to 25 years (9125 days). I have included an individual breakdown by animal category below.
-fe/males_in__litter - These columns showed a strong right skew, but this is due to the large number of 0s for animals where this value is either not applicable or unlisted. It may also be worth creating polynomial features for these as, according to Pets4Homes: "Overly large litters may lead to problems with delivery due to exhaustion, and the possibility of stillborn pups. Having a significant amount of puppies for the dam to feed after the birth can also pose problems, in terms of presenting difficulties with nursing all of the puppies, and ensuring that the dam stays hydrated and eats enough to support all of the puppies."
+* *pet_age_in_days* - Similarly to price, this variable has a very strong right skew. Values range from newborn (i.e. 0 days) to 25 years (9125 days). I have included an individual breakdown by animal category below.
+* *fe/males_in__litter* - These columns showed a strong right skew, but this is due to the large number of 0s for animals where this value is either not applicable or unlisted. It may also be worth creating polynomial features for these as, according to Pets4Homes: "Overly large litters may lead to problems with delivery due to exhaustion, and the possibility of stillborn pups. Having a significant amount of puppies for the dam to feed after the birth can also pose problems, in terms of presenting difficulties with nursing all of the puppies, and ensuring that the dam stays hydrated and eats enough to support all of the puppies."
 
 ![boxplots continuous cleaned](/project-capstone/capstone_images/boxplots-continuous-cleaned.png)
 
-Histograms showing the distribution of price by animal category All of the histograms for pet prices subsetted by pet category still showed a strong right skew. However, the ranges between animal types varied greatly. For instance, the price range for invertebrates maxes out at around £250, whereas the price range for horses maxes out at around £7000. Clearly, category should be an important predictor for price.
+*Histograms showing the distribution of price by animal category.* All of the histograms for pet prices subsetted by pet category still showed a strong right skew. However, the ranges between animal types varied greatly. For instance, the price range for invertebrates maxes out at around £250, whereas the price range for horses maxes out at around £7000. Clearly, category should be an important predictor for price.
+
 The categories with the least extreme right skew were dogs, cats and horses. These were also the categories with the largest maximum prices. This indicated that the outlier removal I had already done had had little impact on the animal types with narrower price ranges. Given the extent of the skew for these categories, I decided to perform further outlier removal on them. Specifically, based on the z-scaled box plots below the histograms, I removed values more than 8 standard deviations from the mean of each category. This will remove some of the most extreme and suspicious outliers whilst keeping the main distributions intact.
 
 ![histograms showing the distribution of price by animal category](/project-capstone/capstone_images/Histograms-price-category.png)
 
-Histograms showing the distribution of pet age by animal category. As with the previous set of histograms, the histograms showing pet age by animal category all exhibited considerable right skew over ranges that were particular to each category. This was unsurprising as pets are most commonly sold as infants. This skew was least pronounced for horses. However, the zscaled box plots below indicated that this skew is less extreme than for price and most categories had a more regularly/densely populated tail, rather than a few extreme outliers. The exceptions to this were invertebrates, rodents and possibly fish. Both invertebrates and rodents had a single value which was extremely far from the main distribution. I removed these two outliers but otherwise leave pet age as is.
+*Histograms showing the distribution of pet age by animal category.* As with the previous set of histograms, the histograms showing pet age by animal category all exhibited considerable right skew over ranges that were particular to each category. This was unsurprising as pets are most commonly sold as infants. This skew was least pronounced for horses. However, the zscaled box plots below indicated that this skew is less extreme than for price and most categories had a more regularly/densely populated tail, rather than a few extreme outliers. The exceptions to this were invertebrates, rodents and possibly fish. Both invertebrates and rodents had a single value which was extremely far from the main distribution. I removed these two outliers but otherwise leave pet age as is.
 
 ![histograms showing the distribution of pet age by animal category](/project-capstone/capstone_images/Histograms-age-category.png)
 
@@ -251,7 +253,7 @@ The first step with the binary variables was to separate the 'Not applicable' an
 
 Heat map showing correlations amongst binary variables and price The heatmap below allows us to see which binary variables have the strongest correlations with the target variable, price. These correlations can be seen on the bottom row of the heatmap. This row shows that an animal being microchipped, vaccinated, worm treated, being sold by the original breeder, being viewable with its mother and not being neutered are all positively correlated with price.
 
-![Heat map showing correlations amongst binary variables](/project-capstone/capstone_images/Binary-heatmap-all.png
+![Heat map showing correlations amongst binary variables](/project-capstone/capstone_images/Binary-heatmap-all.png)
 
 Since most of these features are specific to dogs and cats and these animals are among the more expensive categories, I wanted to check that these positive correlations were not simply due to them being associated with cats and dogs. As such, I created a 2nd heatmap below the first which displays the correlations among the sample variables, but for cats and dogs only. Whilst the 2nd heatmap shows positive correlations between the variables mentioned above and the target variable, the size of the correlations has reduced considerably. This is particularly true for worm_treated_yes and neutered_no (the size of which becomes negligible).
 
@@ -311,51 +313,67 @@ I began by trying a large number of model types with some fairly standard values
 #### Initial models <a name="Initial-models"></a>
 
 I fit 9 different model types on the data and returned their training and test set scores. With this information, we can get a general impression of the performance of each model and whether it is over or underfitting the data.
-I used 3 regularised linear regression models. These are; ridge, LASSO and elastic net regression.
-Of the three, the ridge regressor performed best on the training set (R2: 0.74), but worst on the test set (R2: 0.6). This indicates that the model has overfit the training data.
-This can also be said for the other two models, although the margin of differences between each model's training and test performance is smaller than for the ridge model. Otherwise, the performance of the LASSO and elastic net regressors are similar, with an R2 of ~0.72 for the training set and ~0.62 for the test set. This is perhaps unsurprising as the dataset contains a large number of variables, many of which may not be useful, so the more precise regularisation of LASSO and elastic net are likely to be useful.
-Based on this, I decided to include LASSO and elastic net in the parameter tuning stage, but not ridge.
+
+I used 3 regularised linear regression models. These are; ridge, LASSO and elastic net regression. Of the three, the ridge regressor performed best on the training set (R2: 0.74), but worst on the test set (R2: 0.6). This indicates that the model has overfit the training data. This can also be said for the other two models, although the margin of differences between each model's training and test performance is smaller than for the ridge model. Otherwise, the performance of the LASSO and elastic net regressors are similar, with an R2 of ~0.72 for the training set and ~0.62 for the test set. This is perhaps unsurprising as the dataset contains a large number of variables, many of which may not be useful, so the more precise regularisation of LASSO and elastic net are likely to be useful. Based on this, I decided to include LASSO and elastic net in the parameter tuning stage, but not ridge.
+
 The KNN regressor performed poorly, with an R2 of 0.58 for the training set and 0.34 for the test set. This could potentially be improved through hyperparameter tuning, but given how far this model is behind the others in terms of its performance, I decided not to move forward with it.
 The performance of the decision tree model was similar to that of the ridge regressor, only with more pronounced overfitting and a slightly worse test set R2 (0.59). As with ridge and KNN regression, I did not use this in the parameter tuning stage.
-There were 4 ensemble models. These were; random forest, extra trees, adaboost and gradient boosting regression.
-Of these, adaboost was by far the worst model, attaining a negative R2 on both the training and test sets. This indicates that the model performs worse than simply predicting the mean of the target value for every instance. This is likely because the initial parameters I have chosen are unsuitable. I decided to focus on improving the performance of the other ensemble models but would like to go back and test some other values in iterations of this project.
+
+There were 4 ensemble models. These were; random forest, extra trees, adaboost and gradient boosting regression. Of these, adaboost was by far the worst model, attaining a negative R2 on both the training and test sets. This indicates that the model performs worse than simply predicting the mean of the target value for every instance. This is likely because the initial parameters I have chosen are unsuitable. I decided to focus on improving the performance of the other ensemble models but would like to go back and test some other values in iterations of this project.
+
 The random forest regressor had a similar test set R2 (0.61) to the LASSO and elastic net models, but a larger training set R2 (0.74). This indicates that the model's fair performance might be improved with some regularisation and parameter tuning to minimise overfitting.
 The extra trees regressor was more similar to that of the ridge model (i.e. slightly higher train set R2 than the best similar models, slightly worse test set R2). On this basis, I didn’t move forward with it.
+
 Finally, the gradient boosting regressor had the best test set performance of any of the models (R2: 0.65), but with a training set R2 of 0.92, it had massively overfit the data. As such, with some parameter tuning and regularisation, this could be a promising model.
+
 In sum, I selected four models to take into the parameter tuning stage. These are LASSO, elastic net, random forest and gradient-boosting regression.
 
 #### Parameter tuning <a name="Parameter-tuning"></a>
 
 This section summarises the parameter tuning steps taken for the four best models.
 
-LASSO regression
+*LASSO regression*
 Given that I used the LassoCV class in the initial models section, some amount of parameter tuning will already have been done. As such, rather than using grid search with LASSO, I continued using the LassoCV class for hyperparameter tuning but searched over a wider range of parameters. 
 By default, LassoCV explores 100 alpha levels, the range of which is determined automatically. I expanded this to explore 500 levels within the automatically determined range. Unfortunately, tuning alpha over a larger range did not improve the test set R2 for LASSO. Even with tuning, it failed to beat the initial gradient boosting model's test set R2.
+
 I also attempted to improve the R2 with LASSO + random patches. I selected this as I did not have time to explore all bagging/pasting approaches and random patches was likely to create the most diverse ensemble (by maximising individual estimators' bias). Without parameter tuning, this performed worse than the tuned LASSO model. However, when I attempted tuning, I crashed my laptop. I would like to explore this further in the future, perhaps using a cloud-based machine to access more compute.
-Elastic Net regression
+
+*Elastic Net regression*
 As with the initial LassoCV model, the initial ElasticNetCV model would have done some basic parameter tuning over the values of alpha. So, similarly to above, rather than using grid search, I used the ElasticNetCV class with a larger n_alphas.
 ElasticNetCV also allows parameter tuning over the values of l1_ratio (i.e. the ratio of ridge and lasso regression). In the initial model, this would have been the default value (0.5). The documentation for the class notes that “a good choice of list of values for l1_ratio is often to put more values close to 1 (i.e. Lasso) and less close to 0 (i.e. Ridge)”. I chose a parameter range based on this information.
+
 Tuning the alpha value for the elastic net model resulted in a very small improvement on the test set performance (i.e. from 0.62 to 0.63). Interestingly, the best alpha level was quite a bit smaller than that for the LASSO regressor. The best l1_ratio value (l1_ratio) was also greater than the default value. This means that the model was using more l1 than l2 regularisation (given the relative performances of the initial ridge and LASSO models, this is to be expected).
+
 I also tested whether this model could be further improved through the random patches method. I used a smaller number of estimators than before, due to long training times. Nonetheless, the random patches elastic net model performed worse than the original. This is likely because the parameters I chose introduced too much bias (this is also supported by the poorer training set R2). This could probably be improved by parameter tuning, but as noted above, the last time I attempted this for a bagging regressor, I crashed my laptop. As such, for the time being, I will treat the previous model as my final elastic net model. This final model still performs worse than the initial gradient boosting model.
 
-Random forest regresssor
+*Random forest regresssor*
 For the random forest regressor, I was attempting to find a set of parameters which could attain a higher test set R2 than the initial model's (0.61) and ideally greater than the initial gradient boost regressor model (0.64). To do this, I focused the grid search on 3 parameters used for regularisation; max_depth, min_samples_split and max_leaf_nodes. I began by looking over a reasonably wide range of values to understand the ideal scale for each parameter.
+
 The best estimator found by the 1st round of parameter tuning reached a test set R2 of 0.63. This was a small improvement on the initial model, but still slightly behind the initial gradient boosting regressor. The best estimator’s parameters are max_depth=40, max_leaf_nodes=400, and min_samples_split=16. This meant that for each parameter, the highest value searched over was found to be the best. This indicated that it could be possible to attain slightly better performance by searching over a range of larger values. As such, I ran another round of parameter tuning with larger values and was able to marginally improve the model’s R2 to 0.64.
 
-Gradient boosting
+*Gradient boosting*
 Gradient boosting was the best of the initial models (with the highest test set R2), but also the most overfit model. Given this, I decided to try to test the effects of halving and doubling both of the parameters specified in the original model. I also added n_estimators to the grid search to counterbalance the effect of varying the learning rate. Unfortunately, I had to stop the parameter early as it was taking an extremely long time to run. I am planning to re-run it in future work. Instead, I attempted some manual parameter tuning. However, I was only able to attain a very small improvement in the model's test set R2 (~0.007). Whilst this is not much of an improvement, it does mean that gradient-boosted regression remains the strongest of the models.
 
 #### Comparing models <a name="Comparing-models"></a>
 
-For each of the tuned models, I have generated four plots. These are; a bar chart showing either the 20 largest (absolute valued) coefficients or 20 most important features, a scatter plot showing the model's predictions against the true values for the target, a histogram showing the distribution of the model's residuals and a Q-Q plot, also showing the distribution of the model's residuals.
-Between the four models, the scatterplots, histograms and Q-Q plots are highly similar. All four scatter plots indicate that the models have a slight tendency to underestimate the prices of the listings. Also, the models were unable to replicate sellers’ tendency to price their listings according to round numbers (e.g. £500, £1000 etc.).
+For each of the tuned models, I have generated four plots. These are; a bar chart showing either the 20 largest (absolute valued) coefficients or 20 most important features, a scatter plot showing the model's predictions against the true values for the target, a histogram showing the distribution of the model's residuals and a Q-Q plot, also showing the distribution of the model's residuals. Between the four models, the scatterplots, histograms and Q-Q plots are highly similar. All four scatter plots indicate that the models have a slight tendency to underestimate the prices of the listings. Also, the models were unable to replicate sellers’ tendency to price their listings according to round numbers (e.g. £500, £1000 etc.).
+
+![Scatter plots]
+
 The tendency to underestimate listing prices can also be seen in the histograms of all four models, as each has a longer left-hand tail than the right. The scale of these errors seems to be similar in each of the models.
+
+![Histograms]
+
 Again, the Q-Q plots for all four models are highly similar. These confirm what can be seen in each model's histogram - the distribution of residuals is very tail-heavy, and the left tail is particularly skewed.
+
+![Q-Q plots]
+
 Given the similarity between the four models on these points, I suspect that the underestimation of prices is largely to do with the data itself. As discussed previously, both the target and many of the predictors have highly non-normal distributions. Despite my efforts in cleaning the data, several of the variables still have some mixed-signal because some binary columns are only relevant to certain animal types and thus that a 1 in that column indicates both that the record has that property and is of that animal type (and vice-versa). Given this, in future work, I would like to explore transforming the data to be more normally distributed and building separate models for the various animal categories.
+
 Where the models differ somewhat is in the bar charts indicating strong/important features/coefficients. The two linear regression models both selected registered_1.0 as their largest coefficient, whereas the most important feature for the two ensemble models was neutered_no (which is not even in the LASSO model's top 20). Overall however, all models used predictors we would expect to indicate price quite strongly, i.e. variables which are associated with higher quality breeders for cats and dogs (e.g. vaccinated_yes) and the more expensive categories, such as horses, cats and dogs. For future work, I would like to take a deeper look at the coefficients for each animal breed, sorted by animal category, to determine which breeds best predict price.
 Whilst these models could be used to predict the price of a pet listing with reasonable accuracy, their tendency, when wrong, to be wrong by a very large margin (£1000s) does make them quite limited. 
 
-Stacking ensemble
+*Stacking ensemble*
 I also experimented with creating a stacking ensemble with the four best models as the base estimators and a gradient-boosting regressor as the meta-learner. The model had a worse test set R2 than the gradient boosting regressor. Further analysis of the distribution of errors between models may be able to explain why this is the case.
 
 ## Conclusions and next steps <a name="Conclusions-and-next-steps"></a>
