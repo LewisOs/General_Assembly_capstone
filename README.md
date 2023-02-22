@@ -389,6 +389,7 @@ Where the models differ somewhat is in the bar charts indicating strong/importan
 Whilst these models could be used to predict the price of a pet listing with reasonable accuracy, their tendency, when wrong, to be wrong by a very large margin (£1000s) does make them quite limited. 
 
 **Stacking ensemble**
+
 I also experimented with creating a stacking ensemble with the four best models as the base estimators and a gradient-boosting regressor as the meta-learner. The model had a worse test set R2 than the gradient boosting regressor. Further analysis of the distribution of errors between models may be able to explain why this is the case.
 
 ## Conclusions and next steps <a name="Conclusions-and-next-steps"></a>
