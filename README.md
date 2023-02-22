@@ -229,13 +229,13 @@ seller_n_adverts - A significant proportion of the adverts were listed by a sell
 
 ![boxplots continuous cleaned](/project-capstone/capstone_images/boxplots-continuous-cleaned.png)
 
-*Histograms showing the distribution of price by animal category.* All of the histograms for pet prices subsetted by pet category still showed a strong right skew. However, the ranges between animal types varied greatly. For instance, the price range for invertebrates maxes out at around £250, whereas the price range for horses maxes out at around £7000. Clearly, category should be an important predictor for price.
+**Histograms showing the distribution of price by animal category.** All of the histograms for pet prices subsetted by pet category still showed a strong right skew. However, the ranges between animal types varied greatly. For instance, the price range for invertebrates maxes out at around £250, whereas the price range for horses maxes out at around £7000. Clearly, category should be an important predictor for price.
 
 The categories with the least extreme right skew were dogs, cats and horses. These were also the categories with the largest maximum prices. This indicated that the outlier removal I had already done had had little impact on the animal types with narrower price ranges. Given the extent of the skew for these categories, I decided to perform further outlier removal on them. Specifically, based on the z-scaled box plots below the histograms, I removed values more than 8 standard deviations from the mean of each category. This will remove some of the most extreme and suspicious outliers whilst keeping the main distributions intact.
 
 ![histograms showing the distribution of price by animal category](/project-capstone/capstone_images/Histograms-price-category.png)
 
-*Histograms showing the distribution of pet age by animal category.* As with the previous set of histograms, the histograms showing pet age by animal category all exhibited considerable right skew over ranges that were particular to each category. This was unsurprising as pets are most commonly sold as infants. This skew was least pronounced for horses. However, the zscaled box plots below indicated that this skew is less extreme than for price and most categories had a more regularly/densely populated tail, rather than a few extreme outliers. The exceptions to this were invertebrates, rodents and possibly fish. Both invertebrates and rodents had a single value which was extremely far from the main distribution. I removed these two outliers but otherwise leave pet age as is.
+**Histograms showing the distribution of pet age by animal category.** As with the previous set of histograms, the histograms showing pet age by animal category all exhibited considerable right skew over ranges that were particular to each category. This was unsurprising as pets are most commonly sold as infants. This skew was least pronounced for horses. However, the zscaled box plots below indicated that this skew is less extreme than for price and most categories had a more regularly/densely populated tail, rather than a few extreme outliers. The exceptions to this were invertebrates, rodents and possibly fish. Both invertebrates and rodents had a single value which was extremely far from the main distribution. I removed these two outliers but otherwise leave pet age as is.
 
 ![histograms showing the distribution of pet age by animal category](/project-capstone/capstone_images/Histograms-age-category.png)
 
@@ -245,6 +245,14 @@ Checking the linearity of the relationships between the continuous variables and
 * Smaller and large numbers of images were associated with lower prices, whereas listings with 25 to 30 images were associated with higher prices. I would speculate that this is because more images, in and of itself, is typically a good thing, but very high numbers of images may be associated with other factors which are associated with lower prices. For instance, larger litters may have more images. Animals which are sometimes bred in large numbers (e.g. invertebrates, fish, birds, rodents, rabbits etc.) would require more images and are amongst the cheaper categories.
 * Smaller values for n_adverts were associated with a higher price. This makes sense, as sellers who list animals which are more time or effort intensive to breed are likely to list fewer animals, but charge greater amounts for them. Whilst the regression line does curve back up as the number of adverts climbs, this is likely due to the single seller with 140 adverts, who may charge more than other sellers who list multiple adverts.
 All in all, these four plots indicate that it may be beneficial to create polynomial features for the continuous variables.
+
+![scatter age price](/project-capstone/capstone_images/scatter-age-price.png)
+
+![scatter litter price](/project-capstone/capstone_images/scatter-litter-size-price.png)
+
+![scatter n_adverts price](/project-capstone/capstone_images/scatter-n_adverts-price.png)
+
+![scatter n images price](/project-capstone/capstone_images/scatter-n_images-price.png)
 
 Heat map showing correlations amongst continuous variables The heatmap below shows that n_images and fe/males_in_litter were the best linear predictors of price amongst the continuous variables. seller_n_advets was slightly negatively correlated with price. This is likely because animals with longer infancies (dogs, cats or horses), which necessarily require more time and care, are amongst the more expensive categories. Whereas those which could feasibly be bred in larger numbers (leading to more adverts), such as rabbits, rodents and fish, are among the cheaper pets. Due to the non-linear relationships uncovered above, it is unsurprising that there are no strong correlations here.
 
