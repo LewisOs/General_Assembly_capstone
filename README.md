@@ -270,7 +270,7 @@ Heat map showing correlations amongst binary variables and price The heatmap bel
 
 Since most of these features are specific to dogs and cats and these animals are among the more expensive categories, I wanted to check that these positive correlations were not simply due to them being associated with cats and dogs. As such, I created a 2nd heatmap below the first which displays the correlations among the sample variables, but for cats and dogs only. Whilst the 2nd heatmap shows positive correlations between the variables mentioned above and the target variable, the size of the correlations has reduced considerably. This is particularly true for worm_treated_yes and neutered_no (the size of which becomes negligible).
 
-![Heat map showing correlations amongst binary variables (cats & dogs only)(/project-capstone/capstone_images/Binary-heat-map-cats-and-dogs.png)
+![Heat map showing correlations amongst binary variables (cats & dogs only)](/project-capstone/capstone_images/Binary-heat-map-cats-and-dogs.png)
 
 ### Categorical variables <a name="Categorical-variables"></a>
 
