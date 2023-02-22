@@ -286,7 +286,7 @@ There were 8 categorical variables (category, advert_location, advertiser_type, 
 
 **advertiser_type** - There were 5 unique types of advertiser; individual, breeder, licensed breeder, organisation and company. Adverts listed by organisations and companies are extremely rare.
 
-![advertiser_type bar graph](/project-capstone/capstone_images/No-listings-by-advertiser-type.png)
+![advertiser_type bar graph](/project-capstone/capstone_images/no-listings-by-advertiser-type.png)
 
 **breed** - There were 382 unique breeds in the dataset. Of these, 178 had more than 10 listings and 48 had more than 100. Mixed breed was the most common value. However, as this can apply to any animal category, I added the category type to the breed value of any mixed breed animals (e.g. a mixed breed animal in the category dogs becomes 'Mixed Breed Dogs'). I did this as I suspect that an animal being mixed breed may have a different impact on price depending upon the type of animal it is (e.g. a mixed breed dog or cat may be less valuable than a pedigree one, but I do not know if this is likely to be the case for, say, reptiles or birds). After cleaning these values, the most common breed type was Guinea Pig.
 
