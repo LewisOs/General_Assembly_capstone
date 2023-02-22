@@ -343,13 +343,15 @@ In sum, I selected four models to take into the parameter tuning stage. These ar
 
 This section summarises the parameter tuning steps taken for the four best models.
 
-*LASSO regression*
+**LASSO regression**
+
 Given that I used the LassoCV class in the initial models section, some amount of parameter tuning will already have been done. As such, rather than using grid search with LASSO, I continued using the LassoCV class for hyperparameter tuning but searched over a wider range of parameters. 
 By default, LassoCV explores 100 alpha levels, the range of which is determined automatically. I expanded this to explore 500 levels within the automatically determined range. Unfortunately, tuning alpha over a larger range did not improve the test set R2 for LASSO. Even with tuning, it failed to beat the initial gradient boosting model's test set R2.
 
 I also attempted to improve the R2 with LASSO + random patches. I selected this as I did not have time to explore all bagging/pasting approaches and random patches was likely to create the most diverse ensemble (by maximising individual estimators' bias). Without parameter tuning, this performed worse than the tuned LASSO model. However, when I attempted tuning, I crashed my laptop. I would like to explore this further in the future, perhaps using a cloud-based machine to access more compute.
 
-*Elastic Net regression*
+**Elastic Net regression**
+
 As with the initial LassoCV model, the initial ElasticNetCV model would have done some basic parameter tuning over the values of alpha. So, similarly to above, rather than using grid search, I used the ElasticNetCV class with a larger n_alphas.
 ElasticNetCV also allows parameter tuning over the values of l1_ratio (i.e. the ratio of ridge and lasso regression). In the initial model, this would have been the default value (0.5). The documentation for the class notes that “a good choice of list of values for l1_ratio is often to put more values close to 1 (i.e. Lasso) and less close to 0 (i.e. Ridge)”. I chose a parameter range based on this information.
 
@@ -357,12 +359,14 @@ Tuning the alpha value for the elastic net model resulted in a very small improv
 
 I also tested whether this model could be further improved through the random patches method. I used a smaller number of estimators than before, due to long training times. Nonetheless, the random patches elastic net model performed worse than the original. This is likely because the parameters I chose introduced too much bias (this is also supported by the poorer training set R2). This could probably be improved by parameter tuning, but as noted above, the last time I attempted this for a bagging regressor, I crashed my laptop. As such, for the time being, I will treat the previous model as my final elastic net model. This final model still performs worse than the initial gradient boosting model.
 
-*Random forest regresssor*
+**Random forest regresssor**
+
 For the random forest regressor, I was attempting to find a set of parameters which could attain a higher test set R2 than the initial model's (0.61) and ideally greater than the initial gradient boost regressor model (0.64). To do this, I focused the grid search on 3 parameters used for regularisation; max_depth, min_samples_split and max_leaf_nodes. I began by looking over a reasonably wide range of values to understand the ideal scale for each parameter.
 
 The best estimator found by the 1st round of parameter tuning reached a test set R2 of 0.63. This was a small improvement on the initial model, but still slightly behind the initial gradient boosting regressor. The best estimator’s parameters are max_depth=40, max_leaf_nodes=400, and min_samples_split=16. This meant that for each parameter, the highest value searched over was found to be the best. This indicated that it could be possible to attain slightly better performance by searching over a range of larger values. As such, I ran another round of parameter tuning with larger values and was able to marginally improve the model’s R2 to 0.64.
 
-*Gradient boosting*
+**Gradient boosting**
+
 Gradient boosting was the best of the initial models (with the highest test set R2), but also the most overfit model. Given this, I decided to try to test the effects of halving and doubling both of the parameters specified in the original model. I also added n_estimators to the grid search to counterbalance the effect of varying the learning rate. Unfortunately, I had to stop the parameter early as it was taking an extremely long time to run. I am planning to re-run it in future work. Instead, I attempted some manual parameter tuning. However, I was only able to attain a very small improvement in the model's test set R2 (~0.007). Whilst this is not much of an improvement, it does mean that gradient-boosted regression remains the strongest of the models.
 
 #### Comparing models <a name="Comparing-models"></a>
