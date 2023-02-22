@@ -77,51 +77,64 @@ With this problem solved, I ran my 20,000+ pages of downloaded HTML through the 
 In this section, I will review the data-cleaning steps that I took to prepare the data for EDA and predictive analysis. The uncleaned dataset consisted of 20211 rows and 39 features. The features were:
 
 Target variable:
-price - the price of 1 animal in the listing (some listings covered multiple animals, such as dog litters)
+
+* **price** - the price of 1 animal in the listing (some listings covered multiple animals, such as dog litters)
+
 Seller/advert variables:
-title - the title of the advert  
-url - the advert URL, included for reference
-seller_type - a categorical variable indicating whether the seller was a person or an organisation
-seller_name - the seller’s name
-phone_verified - a binary variable indicating whether the seller is verified by phone
-email_verified - a binary variable indicating whether the seller is verified by email
-facebook_verified - a binary variable indicating whether the seller is verified by Facebook     
-google_verified - a binary variable indicating whether the seller is verified by Google     
-n_images - a continuous variable indicating the number of images included in the advert           
-advert_id - the advert ID, included for reference       
-advert_location - the location of the seller (all sellers were UK based)
-advert_type - a categorical variable indicating the type of advert. Pets4Homes also allows sellers to list accessories and services for sale. As I was only looking at pets, this value was the same for all rows and the variable was dropped.
+
+* **title** - the title of the advert
+* **url** - the advert URL, included for reference
+* **seller_type** - a categorical variable indicating whether the seller was a person or an organisation
+* **seller_name** - the seller’s name
+* **phone_verified** - a binary variable indicating whether the seller is verified by phone
+* **email_verified** - a binary variable indicating whether the seller is verified by email
+* **facebook_verified** - a binary variable indicating whether the seller is verified by Facebook     
+* **google_verified** - a binary variable indicating whether the seller is verified by Google     
+* **n_images** - a continuous variable indicating the number of images included in the advert           
+* **advert_id** - the advert ID, included for reference       
+* **advert_location** - the location of the seller (all sellers were UK based)
+* **advert_type** - a categorical variable indicating the type of advert. Pets4Homes also allows sellers to list accessories and services for sale. As I was only looking at pets, this value was the same for all rows and the variable was dropped.
 advertiser_type - a categorical variable providing similar information to seller_type, but at a more granular level (e.g. it includes levels such as ‘licensed breeder’ and ‘charity’)
-description - the seller-supplied description of the listing (a text box from the webpage)
-pet_available - the date when the pet is available for collection        
+* **description** - the seller-supplied description of the listing (a text box from the webpage)
+* **pet_available** - the date when the pet is available for collection        
+
 General pet variables:
-category - a categorical variable specifying how the animal is classed by Pets4Homes’ search function. This effectively corresponds to species (e.g. dogs, cats, horses), but also includes some more general bins (reptiles, birds, fish).     
-breed - a categorical variable specifying the breed of the particular pet (e.g. ‘English springer spaniel’).
-pet_age - the pet’s age formatted as variations on ‘n days, n months, n years’   
-pet_colour - the colour of the pet              
-pet_sex - the sex of the pet 
+
+* **category** - a categorical variable specifying how the animal is classed by Pets4Homes’ search function. This effectively corresponds to species (e.g. dogs, cats, horses), but also includes some more general bins (reptiles, birds, fish).     
+* **breed** - a categorical variable specifying the breed of the particular pet (e.g. ‘English springer spaniel’).
+* **pet_age** - the pet’s age formatted as variations on ‘n days, n months, n years’   
+* **pet_colour** - the colour of the pet              
+* **pet_sex** - the sex of the pet 
+
 Cat and dog-specific variables:
-health_checked - a binary variable indicating if the cat or dog has been health checked
-microchipped - a binary variable indicating if the cat or dog has been microchipped
-neutered - a binary variable indicating if the cat or dog has been neutered
-vaccinated - a binary variable indicating if the cat or dog has been vaccinated          
-worm_treated - a binary variable indicating if the cat or dog has been worm_treated  
-pets_in_litter - two continuous variables formatted as variations on ‘n males / n females’
-original_breeder - a binary variable indicating if the seller is the original breeder
-Cat-specific variable:
-registered - a categorical variable indicating whether a cat is registered with any of 3 cat owners associations      
+
+* **health_checked** - a binary variable indicating if the cat or dog has been health checked
+* **microchipped** - a binary variable indicating if the cat or dog has been microchipped
+* **neutered** - a binary variable indicating if the cat or dog has been neutered
+* **vaccinated** - a binary variable indicating if the cat or dog has been vaccinated          
+* **worm_treated** - a binary variable indicating if the cat or dog has been worm_treated  
+* **pets_in_litter** - two continuous variables formatted as variations on ‘n males / n females’
+* **original_breeder** - a binary variable indicating if the seller is the original breeder
+
+Cat-specific variables:
+
+* **registered** - a categorical variable indicating whether a cat is registered with any of 3 cat owners associations      
+
 Dog-specific variables:          
-kc_registered - a binary variable indicating whether a dog is registered with the UK’s Kennel Club
-Viewable_with_mother - a binary variable indicating whether a puppy is viewable with its mother
+
+* **kc_registered** - a binary variable indicating whether a dog is registered with the UK’s Kennel Club
+* **biewable_with_mother** - a binary variable indicating whether a puppy is viewable with its mother
+
 Horse specific variables     
-birth_year - a continuous variable indicating a horse’s year of birth     
-category_1 - a categorical variable indicating the horse’s primary use (e.g. dressage, show jumping, companionship etc.)
-category_2 - a categorical variable indicating the horse’s secondary use with identical levels to category_1
-gender - a categorical variable indicating both the horse’s sex and whether it was neutered, with 3 levels (stallion, gelding, mare)
-Height - a continuous variable specifying the horse’s height, measured in hands                   
-Origin - a categorical variable indicating the horse’s country of origin
-level_jumping - a categorical variable indicating at what level the horse competed at show jumping
-level_dressage - a categorical variable indicating at what level the horse competed at dressage
+
+* **birth_year** - a continuous variable indicating a horse’s year of birth     
+* **category_1** - a categorical variable indicating the horse’s primary use (e.g. dressage, show jumping, companionship etc.)
+* **category_2** - a categorical variable indicating the horse’s secondary use with identical levels to category_1
+* **gender** - a categorical variable indicating both the horse’s sex and whether it was neutered, with 3 levels (stallion, gelding, mare)
+* **height** - a continuous variable specifying the horse’s height, measured in hands                   
+* **origin** - a categorical variable indicating the horse’s country of origin
+* **level_jumping** - a categorical variable indicating at what level the horse competed at show jumping
+* **level_dressage** - a categorical variable indicating at what level the horse competed at dressage
 
 As you may be able to tell from the variables listed above, the initial dataset was quite messy and needed significant cleaning. Two of the most obvious problems were distinct columns representing similar information (e.g. the sex, neutered and gender columns, or the age and birth_year columns) and columns which only had values for certain animal types (e.g any of the dog, cat or horse specific columns) meaning the data set had a large number of NaNs. In addition to this, most columns contained information which was simply pulled straight from the raw HTML. As such, many columns contained unprocessed numerical information (e.g. ‘7 males / 5 females’) or contained correctly typed numerical information which was incorrectly typed as a string. There were a small number of exceptions where I had created numerical variables based on information in the HTML (e.g. the number of photos included in the advert). 
 
