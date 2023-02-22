@@ -371,7 +371,9 @@ Gradient boosting was the best of the initial models (with the highest test set 
 
 #### Comparing models <a name="Comparing-models"></a>
 
-For each of the tuned models, I have generated four plots. These are; a bar chart showing either the 20 largest (absolute valued) coefficients or 20 most important features, a scatter plot showing the model's predictions against the true values for the target, a histogram showing the distribution of the model's residuals and a Q-Q plot, also showing the distribution of the model's residuals. Between the four models, the scatterplots, histograms and Q-Q plots are highly similar. All four scatter plots indicate that the models have a slight tendency to underestimate the prices of the listings. Also, the models were unable to replicate sellers’ tendency to price their listings according to round numbers (e.g. £500, £1000 etc.).
+For each of the tuned models, I have generated four plots. These are; a bar chart showing either the 20 largest (absolute valued) coefficients or 20 most important features, a scatter plot showing the model's predictions against the true values for the target, a histogram showing the distribution of the model's residuals and a Q-Q plot, also showing the distribution of the model's residuals. Between the four models, the scatterplots, histograms and Q-Q plots are highly similar. 
+
+All four scatter plots indicate that the models have a slight tendency to underestimate the prices of the listings. Also, the models were unable to replicate sellers’ tendency to price their listings according to round numbers (e.g. £500, £1000 etc.).
 
 ![Scatter plots](/project-capstone/capstone_images/comparing-models-scatter.png)
 
